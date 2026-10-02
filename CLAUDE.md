@@ -6,7 +6,7 @@
 - Read `docs/product-spec.md` before building any screen. Read `docs/design-system.md` before writing any UI. Use `docs/mock-data.md` for every number shown.
 
 ## Hard rules
-- Mobile only. Design for 360 to 430 px wide. On desktop, render the app inside a centred phone frame (390 x 844). No desktop layouts.
+- Mobile only. Design for 360 to 440 px wide (every current phone). On laptops, show the same mobile layout in a centred, full-height column, max 480 px wide, with a plain background either side (like urbanofashion.com). No phone bezel, no desktop layouts.
 - Simple, no-nonsense app. One job: find safe surplus and invest it. Do not add features that are not in the spec.
 - Do not build: auto-invest, auto-redeem, confidence scores, onboarding or KYC, regulatory screens, fund search, a credit flow, a full transactions dashboard.
 - The core flow (Home to Success) must be completable in under 2 minutes.
