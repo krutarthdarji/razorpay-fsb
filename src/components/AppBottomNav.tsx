@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
+import { paths } from '../routes';
 import {
   BottomNav,
   BottomNavItem,
@@ -10,7 +11,7 @@ import {
 } from '@razorpay/blade/components';
 
 /** Routes that show the bottom nav (top-level tabs) */
-export const TAB_PATHS = ['/', '/portfolio'];
+export const TAB_PATHS: string[] = [paths.home, paths.portfolio];
 
 export function AppBottomNav() {
   const { pathname } = useLocation();
@@ -20,14 +21,14 @@ export function AppBottomNav() {
 
   return (
     <BottomNav>
-      <BottomNavItem title="Home" icon={HomeIcon} as={NavLink} href="/" isActive={pathname === '/'} />
+      <BottomNavItem title="Home" icon={HomeIcon} as={NavLink} href={paths.home} isActive={pathname === paths.home} />
       <BottomNavItem title="Payouts" icon={SendIcon} onClick={notInDemo} />
       <BottomNavItem
         title="Invest"
         icon={TrendingUpIcon}
         as={NavLink}
-        href="/portfolio"
-        isActive={pathname === '/portfolio'}
+        href={paths.portfolio}
+        isActive={pathname === paths.portfolio}
       />
       <BottomNavItem title="More" icon={MoreHorizontalIcon} onClick={notInDemo} />
     </BottomNav>

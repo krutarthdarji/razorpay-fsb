@@ -8,13 +8,28 @@ export type Merchant = {
   idleDays: number;
 };
 
-export type Outflow = {
-  id: string;
-  label: string;
-  /** Display date, e.g. "1 Nov". "Various" when spread across the period. */
+/** A dated movement of money. Dates are ISO strings, e.g. "2026-11-01". */
+export type CashEvent = {
   date: string;
   amount: number;
 };
+
+export type Outflow = {
+  id: string;
+  label: string;
+  /** For predicted spends: what the prediction is based on, in plain words */
+  basis?: string;
+  /** Total over the horizon */
+  amount: number;
+  /** When it goes out. More than one payment shows as "Various". */
+  payments: CashEvent[];
+};
+
+/** Money expected to come in. Shown to the merchant, but not counted in the safe amount. */
+export type Inflow = {
+  id: string;
+  label: string;
+} & CashEvent;
 
 export type InvestOptionId = 'liquid' | 'overnight' | 'sweepFd' | 'idle';
 

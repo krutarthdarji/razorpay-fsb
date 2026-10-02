@@ -1,12 +1,12 @@
 /** Inputs to the forecast that are product decisions, not merchant data */
 export const plan = {
+  /** The demo's "today". Change here to move every date in the app. */
+  today: '2026-10-08',
   /** How far ahead we look at outflows, and how long the money is invested */
   horizonDays: 45,
-  /** Extra cash always kept in the account on top of known outflows */
-  safetyBuffer: 3_00_000,
   slider: {
     min: 10_000,
-    /** Full surplus (balance minus known outflows) */
+    /** Balance minus scheduled payments */
     max: 8_00_000,
     step: 10_000,
   },

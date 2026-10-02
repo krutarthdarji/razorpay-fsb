@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useTheme } from '@razorpay/blade/components';
+import { navHeight } from './GlobalNav';
 
 /**
  * Widest the app ever gets. Covers every current phone (largest is 440px),
@@ -12,6 +13,8 @@ export const APP_MAX_WIDTH = 480;
 const Page = styled.div(({ theme }) => ({
   display: 'flex',
   justifyContent: 'center',
+  // Room for the fixed GlobalNav
+  paddingTop: `calc(${navHeight(theme.spacing)}px + env(safe-area-inset-top))`,
   backgroundColor: theme.colors.surface.background.cloud.subtle,
 }));
 
@@ -21,10 +24,10 @@ const Column = styled.div`
   flex-direction: column;
   width: 100%;
   max-width: ${APP_MAX_WIDTH}px;
-  height: 100vh;
-  height: 100dvh; /* follows mobile browser bars as they show and hide */
+  /* Full window height minus the GlobalNav. dvh follows mobile browser bars as they show and hide. */
+  height: ${({ theme }) => `calc(100vh - ${navHeight(theme.spacing)}px - env(safe-area-inset-top))`};
+  height: ${({ theme }) => `calc(100dvh - ${navHeight(theme.spacing)}px - env(safe-area-inset-top))`};
   overflow: hidden;
-  padding-top: env(safe-area-inset-top);
   background-color: ${({ theme }) => theme.colors.surface.background.gray.moderate};
   /* Containing block for position: fixed children (BottomNav, Toast, BottomSheet),
      so they stay inside the column on wide screens. */

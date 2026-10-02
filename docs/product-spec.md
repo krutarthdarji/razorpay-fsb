@@ -1,5 +1,9 @@
 # Product Spec
 
+## Our USP
+- RazorpayX **recommends the amount** to invest, personalised to the merchant. Anyone can subtract scheduled payments from a balance. Only RazorpayX can also predict the spends that are not on any calendar yet, from the merchant's own account history.
+- No "safety buffer" anywhere in the product or copy. The gap between "balance minus scheduled payments" and the recommendation is explained as spends RazorpayX predicts.
+
 ## The job
 - Merchant: SME owner on a RazorpayX current account. Runs the business from the phone.
 - Job: "Never miss a payment, and don't let the rest sit wasted."
@@ -9,11 +13,20 @@
 Home → Insight → Option → Invest → Success
 Then: Portfolio → Redeem
 
-## Screens
+## Landing page (`/`)
+- For someone arriving cold. Explains the problem, the idea, how it works, returns and guardrails, in the razorpay.com/x look.
+- Sections: Hero (USP headline, live app preview), The problem (merchant + each friction point beside how we fix it), Our edge (Balance − Scheduled payments − Spends we predict = Recommended to invest, plus what we predict and what we learn from), How it works (4 stacking cards), Returns (rupees vs sweep FD and idle), Why on your phone, closing CTA.
+- "App Demo" button: centred in the hero; once it scrolls away it docks at the bottom of the screen; it steps aside when the closing CTA is on screen. Opens `/app`.
+
+## Screens (app demo, under `/app`)
 
 ### 1. Home
 - RazorpayX-style home: account balance at top.
-- One nudge card (the hero of the screen):
+- Balance card also shows money coming in and going out over the next 45 days.
+- One nudge card (the hero of the screen), badged "RazorpayX recommends". Also shows where the balance goes (half-donut: scheduled, predicted spends, recommended) and what the recommended amount earns vs sweep FD vs idle.
+- "Next 45 days" card: weekly money in vs scheduled out vs predicted out (bar chart), the list of scheduled payments, and the spends RazorpayX predicts with what each is based on.
+- "Your balance after investing" card: day-by-day balance (area chart), invested vs left idle. Every payment covered; shows the lowest balance and its date.
+- Nudge card copy:
   - "₹5,00,000 can earn for you"
   - "Idle for 12 days. Could earn about ₹3,945 in 45 days."
   - CTA: "See safe amount"
@@ -24,7 +37,8 @@ Then: Portfolio → Redeem
 - Sub: "Based on your inflows, outflows and upcoming payouts."
 - "Why this amount" (Collapsible, closed by default). Three lines:
   - Balance today: ₹20,00,000
-  - Kept aside for salaries, rent, GST and vendors (next 45 days) plus a buffer: ₹15,00,000
+  - Scheduled payments (salaries, rent, GST, vendors, next 45 days): ₹12,00,000
+  - Spends RazorpayX predicts (not on your calendar yet): ₹3,00,000
   - Safe to invest: ₹5,00,000
   - Small list of upcoming outflows with dates (from mock data)
 - CTA: "Invest ₹5,00,000"
@@ -41,7 +55,7 @@ Then: Portfolio → Redeem
 - Amount slider (custom AmountSlider). Range ₹10,000 to ₹8,00,000. Starts at ₹5,00,000.
 - Recommended marker on the slider.
 - Live earnings preview updates with the amount.
-- Above ₹5,00,000: soft warning (Alert, notice): "Above the safe amount. Your buffer for salaries on 1 Nov gets thinner." Not blocked.
+- Above ₹5,00,000: soft warning (Alert, notice): "Above the recommended amount. Money for spends we expect gets thinner before salaries on 1 Nov." Not blocked.
 - Debit from: RazorpayX current account (shown, not editable)
 - CTA: "Invest ₹X" opens MPIN (OTPInput, 4 digits, any value works in demo)
 

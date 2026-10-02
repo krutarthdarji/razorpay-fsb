@@ -3,7 +3,8 @@ import { Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
 import { useTheme } from '@razorpay/blade/components';
 import { msToS, toBezier } from '../lib/motion';
 
-export type ScreenRoute = { path: string; element: React.ReactNode };
+/** `index` is the screen at the parent path; others are relative paths like 'insight' */
+export type ScreenRoute = { path: string; index?: boolean; element: React.ReactNode };
 
 /** How far the screen underneath shifts left while the new one slides over it */
 const PARALLAX = '-25%';
@@ -51,9 +52,13 @@ export function AnimatedRoutes({ routes }: { routes: ScreenRoute[] }) {
         }}
       >
         <Routes location={location}>
-          {routes.map((r) => (
-            <Route key={r.path} path={r.path} element={r.element} />
-          ))}
+          {routes.map((r) =>
+            r.index ? (
+              <Route key="index" index element={r.element} />
+            ) : (
+              <Route key={r.path} path={r.path} element={r.element} />
+            ),
+          )}
         </Routes>
       </motion.div>
     </AnimatePresence>
