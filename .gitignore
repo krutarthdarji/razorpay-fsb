@@ -3,3 +3,6 @@ dist
 *.local
 .DS_Store
 *.tsbuildinfo
+
+# Buildathon brief from the organisers (not project code)
+Razorpay - FSB.docx
