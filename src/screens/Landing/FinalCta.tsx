@@ -4,6 +4,7 @@ import { ArrowRightIcon, Box, Button, Display, Text } from '@razorpay/blade/comp
 import { merchant } from '../../data';
 import { formatINR } from '../../lib/format';
 import { Container } from './layout';
+import { brand } from '../../brand';
 
 const Band = styled.section(({ theme }) => ({
   paddingTop: theme.spacing[11] * 1.5,
@@ -20,12 +21,12 @@ export const FinalCta = forwardRef<HTMLDivElement, { onDemo: () => void }>(funct
       <Container>
         <Box display="flex" flexDirection="column" alignItems="center" gap="spacing.6" textAlign="center">
           <Display as="h2" size="medium" weight="regular" color="surface.text.staticWhite.normal" textAlign="center">
-            See it on a real business
+            See {brand.name} work on Ravi's account
           </Display>
           <Box maxWidth="560px">
             <Text size="large" color="surface.text.staticWhite.subtle" textAlign="center">
-              {merchant.businessName} has {formatINR(merchant.balance)} after admissions. See how much RazorpayX
-              recommends investing, and invest it in under 2 minutes.
+              {merchant.businessName} has {formatINR(merchant.balance)} after admissions. Watch {brand.name} find what's
+              safe, and invest it in under 2 minutes.
             </Text>
           </Box>
           <Box ref={ref}>

@@ -1,19 +1,28 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, useTheme } from '@razorpay/blade/components';
-import { navHeight } from '../../components/GlobalNav';
+import { LandingNav, navHeight } from '../../components/LandingNav';
 import { useOnScreen } from '../../lib/useOnScreen';
 import { paths } from '../../routes';
 import { Hero } from './Hero';
-import { FrictionSection } from './FrictionSection';
-import { RecommendationSection } from './RecommendationSection';
-import { HowItWorks } from './HowItWorks';
-import { ReturnsSection } from './ReturnsSection';
-import { PocketSection } from './PocketSection';
+import { ProblemSection } from './ProblemSection';
+import { MerchantSection } from './MerchantSection';
+import { TodaySection } from './TodaySection';
+import { InsightBand } from './InsightBand';
+import { SolutionSection } from './SolutionSection';
+import { FlowSection } from './FlowSection';
+import { WhySection } from './WhySection';
+import { DecisionsSection } from './DecisionsSection';
+import { MetricsSection } from './MetricsSection';
+import { ImpactSection } from './ImpactSection';
 import { FinalCta } from './FinalCta';
 import { Footer } from './Footer';
 import { FloatingDemoButton } from './FloatingDemoButton';
 
+/**
+ * The pitch, in the order a reviewer asks: problem, merchant, today's friction,
+ * the insight, the solution, the flow, why us and why mobile, decisions, metrics, impact.
+ */
 export function Landing() {
   const { theme } = useTheme();
   const navigate = useNavigate();
@@ -28,12 +37,18 @@ export function Landing() {
 
   return (
     <Box paddingTop={`calc(${navHeight(theme.spacing)}px + env(safe-area-inset-top))`}>
+      <LandingNav />
       <Hero ref={heroCtaRef} onDemo={goToDemo} />
-      <FrictionSection />
-      <RecommendationSection />
-      <HowItWorks />
-      <ReturnsSection />
-      <PocketSection />
+      <ProblemSection />
+      <MerchantSection />
+      <TodaySection />
+      <InsightBand />
+      <SolutionSection />
+      <FlowSection onDemo={goToDemo} />
+      <WhySection />
+      <DecisionsSection />
+      <MetricsSection />
+      <ImpactSection />
       <FinalCta ref={finalCtaRef} onDemo={goToDemo} />
       <Footer />
       <FloatingDemoButton visible={!heroCtaVisible && !finalCtaVisible} onDemo={goToDemo} />

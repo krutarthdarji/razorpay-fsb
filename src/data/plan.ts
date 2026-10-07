@@ -2,6 +2,10 @@
 export const plan = {
   /** The demo's "today". Change here to move every date in the app. */
   today: '2026-10-08',
+  /** Liquid fund units are allotted the next working day */
+  allotmentDays: 1,
+  /** Instant credit on withdrawal is free for this many days */
+  freeCreditDays: 1,
   /** How far ahead we look at outflows, and how long the money is invested */
   horizonDays: 45,
   slider: {

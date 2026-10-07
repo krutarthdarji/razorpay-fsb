@@ -1,11 +1,13 @@
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { Box, Button, Divider, Link, Text, useTheme } from '@razorpay/blade/components';
+import { Box, Divider, Link, Text, useTheme } from '@razorpay/blade/components';
 import razorpayxLogo from '../assets/razorpayx-logo.png';
+import { brand } from '../brand';
 import { paths } from '../routes';
 import { useIsDesktop } from '../lib/useIsDesktop';
+import { KoshAvatar } from './app/KoshAvatar';
 
-/** Nav bar height, from the spacing scale. Everything below the nav offsets by this. */
+/** Nav bar height, from the spacing scale. The landing page offsets by this. */
 export const navHeight = (spacing: Record<number, number>) => spacing[11];
 
 /** Widest the landing page content gets */
@@ -23,24 +25,21 @@ const Bar = styled.header(({ theme }) => ({
 }));
 
 const BrandLink = styled(RouterLink)({ display: 'flex', alignItems: 'center', textDecoration: 'none' });
-
-/** The RazorpayX wordmark, as on razorpay.com/x */
 const Logo = styled.img(({ theme }) => ({ height: theme.spacing[7], width: 'auto', display: 'block' }));
 
-const landingLinks = [
-  { label: 'The problem', href: '#problem' },
-  { label: 'Our edge', href: '#recommendation' },
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Returns', href: '#returns' },
+const links = [
+  { label: 'Problem', href: '#problem' },
+  { label: 'Merchant', href: '#merchant' },
+  { label: 'Solution', href: '#solution' },
+  { label: 'Flow', href: '#flow' },
+  { label: 'Decisions', href: '#decisions' },
+  { label: 'Metrics', href: '#metrics' },
 ];
 
-/** Fixed on every path: RazorpayX logo and product name on the left */
-export function GlobalNav() {
+/** The landing page's nav: responsive, unlike the app's own header */
+export function LandingNav() {
   const { theme } = useTheme();
-  const { pathname } = useLocation();
-  const navigate = useNavigate();
   const isDesktop = useIsDesktop();
-  const isLanding = pathname === paths.landing;
 
   return (
     <Bar>
@@ -53,28 +52,25 @@ export function GlobalNav() {
         alignItems="center"
         justifyContent="space-between"
       >
-        <BrandLink to={paths.landing} aria-label="RazorpayX Surplus, home">
+        <BrandLink to={paths.landing} aria-label={brand.fullName}>
           <Logo src={razorpayxLogo} alt="RazorpayX" />
           <Divider orientation="vertical" marginX="spacing.3" height="20px" />
-          <Text size="large" color="surface.text.gray.muted">
-            Surplus
-          </Text>
+          <Box display="flex" alignItems="center" gap="spacing.2">
+            <KoshAvatar size="small" />
+            <Text size="large" weight="semibold">
+              {brand.name}
+            </Text>
+          </Box>
         </BrandLink>
 
-        {isLanding && isDesktop && (
-          <Box display="flex" gap="spacing.8">
-            {landingLinks.map((l) => (
+        {isDesktop && (
+          <Box display="flex" gap="spacing.7">
+            {links.map((l) => (
               <Link key={l.href} href={l.href} color="neutral" size="medium">
                 {l.label}
               </Link>
             ))}
           </Box>
-        )}
-
-        {!isLanding && (
-          <Button variant="tertiary" size="small" onClick={() => navigate(paths.landing)}>
-            About
-          </Button>
         )}
       </Box>
     </Bar>

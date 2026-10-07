@@ -2,10 +2,7 @@
 export const paths = {
   landing: '/',
   home: '/app',
-  insight: '/app/insight',
-  option: '/app/option',
-  invest: '/app/invest',
-  success: '/app/success',
+  kosh: '/app/kosh',
+  order: '/app/order',
   portfolio: '/app/portfolio',
-  redeem: '/app/redeem',
 } as const;

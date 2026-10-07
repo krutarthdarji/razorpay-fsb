@@ -1,50 +1,62 @@
 import { useNavigate } from 'react-router-dom';
-import { AppBar, AppBarLeading, Box, Text } from '@razorpay/blade/components';
-import { merchant, plan, predictedSpends, upcomingOutflows } from '../../data';
-import { formatDay } from '../../lib/dates';
+import { Box } from '@razorpay/blade/components';
+import { investOptions, merchant, upcomingOutflows } from '../../data';
 import { cashflow, recommendation } from '../../lib/recommendation';
+import { useDemo } from '../../state/demo';
 import { paths } from '../../routes';
-import { BalanceCard } from './BalanceCard';
-import { NudgeCard } from './NudgeCard';
+import { Reveal } from '../../components/app/Reveal';
+import { HomeHero } from './HomeHero';
+import { KoshNudge } from './KoshNudge';
+import { UpcomingPayments } from './UpcomingPayments';
 import { CashflowCard } from './CashflowCard';
-import { ForecastCard } from './ForecastCard';
 
 export function Home() {
   const navigate = useNavigate();
+  const { balance, investment, startFlow } = useDemo();
   const r = recommendation;
+  const fundName = investment ? investOptions[investment.optionId].name : undefined;
 
   return (
-    <Box>
-      <AppBar variant="subtle" backgroundColor="surface.background.gray.moderate">
-        <AppBarLeading title={merchant.businessName} />
-      </AppBar>
+    <Box paddingBottom="spacing.7">
+      <HomeHero
+        balance={balance}
+        idle={r.surplus}
+        idleDays={merchant.idleDays}
+        invested={investment?.amount ?? 0}
+        fundName={fundName}
+      />
 
-      <Box paddingX="spacing.5" paddingBottom="spacing.7" display="flex" flexDirection="column" gap="spacing.5">
-        <Text color="surface.text.gray.muted">Hi {merchant.ownerName.split(' ')[0]}</Text>
-        <BalanceCard
-          accountName={merchant.accountName}
-          balance={merchant.balance}
-          moneyIn={cashflow.totalIn}
-          moneyOut={cashflow.totalOut}
-          days={r.days}
-        />
-        <NudgeCard
-          balance={merchant.balance}
-          scheduled={r.scheduled}
-          predicted={r.predicted}
-          safeAmount={r.safe}
-          idleDays={merchant.idleDays}
-          days={r.days}
-          earnings={r.comparison}
-          optionName={r.option.name}
-          onSeeSafeAmount={() => navigate(paths.insight)}
-        />
-        <CashflowCard days={r.days} weeks={cashflow.weeks} scheduled={upcomingOutflows} predicted={predictedSpends} />
-        <ForecastCard
-          points={cashflow.balance}
-          invested={r.safe}
-          keyDays={[formatDay(plan.today), ...upcomingOutflows.filter((o) => o.id === 'salaries' || o.id === 'gst').map((o) => formatDay(o.payments[0].date))]}
-        />
+      {/* Cards overlap the blue band */}
+      <Box position="relative" zIndex={1} paddingX="spacing.5" marginTop="-56px" display="flex" flexDirection="column" gap="spacing.5">
+        <Reveal index={0}>
+          {investment && fundName ? (
+            <KoshNudge
+              state="invested"
+              invested={investment.amount}
+              fundName={fundName}
+              allotmentDate={r.allotmentDate}
+              onSee={() => navigate(paths.portfolio)}
+            />
+          ) : (
+            <KoshNudge
+              state="recommend"
+              safe={r.safe}
+              days={r.days}
+              earnings={r.expectedEarnings}
+              moreThanSweepFd={r.comparison.moreThanSweepFd}
+              onSee={() => {
+                startFlow();
+                navigate(paths.kosh);
+              }}
+            />
+          )}
+        </Reveal>
+        <Reveal index={1}>
+          <UpcomingPayments outflows={upcomingOutflows} />
+        </Reveal>
+        <Reveal index={2}>
+          <CashflowCard days={r.days} weeks={cashflow.weeks} moneyIn={cashflow.totalIn} moneyOut={cashflow.totalOut} />
+        </Reveal>
       </Box>
     </Box>
   );

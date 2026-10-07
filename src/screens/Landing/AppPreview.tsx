@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Box } from '@razorpay/blade/components';
 import { Home } from '../Home/Home';
 import { AppBottomNav } from '../../components/AppBottomNav';
+import { AppHeader } from '../../components/app/AppHeader';
 
 /** The app is designed at this width; the preview scales it down to fit */
 const SCREEN_WIDTH = 390;
@@ -57,6 +58,7 @@ export function AppPreview({ screenHeight }: { screenHeight: number }) {
               aria-hidden
               style={{ height: screenHeight, transform: `scale(${scale})` }}
             >
+              <AppHeader />
               <Home />
               <AppBottomNav />
             </Surface>

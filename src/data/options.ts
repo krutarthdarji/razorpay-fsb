@@ -4,17 +4,19 @@ import type { InvestOption, InvestOptionId } from './types';
 export const investOptions: Record<InvestOptionId, InvestOption> = {
   liquid: {
     id: 'liquid',
-    name: 'Liquid Fund',
+    name: 'ABC Liquid Fund',
     annualRatePct: 6.4,
     isInvestable: true,
     isRecommended: true,
+    note: 'Best fit for a 45-day horizon. Low risk.',
   },
   overnight: {
     id: 'overnight',
-    name: 'Overnight Fund',
+    name: 'ABC Overnight Fund',
     annualRatePct: 5.8,
     isInvestable: true,
     isRecommended: false,
+    note: 'Lowest risk. Earns a little less.',
   },
   sweepFd: {
     id: 'sweepFd',

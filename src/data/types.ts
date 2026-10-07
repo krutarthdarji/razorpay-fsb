@@ -1,6 +1,7 @@
 export type Merchant = {
   businessName: string;
   ownerName: string;
+  ownerFirstName: string;
   accountName: string;
   /** Current account balance today, in rupees */
   balance: number;
@@ -41,6 +42,8 @@ export type InvestOption = {
   /** A fund the merchant can actually invest in (not a benchmark) */
   isInvestable: boolean;
   isRecommended: boolean;
+  /** One plain line on why you'd pick it */
+  note?: string;
 };
 
 export type Holding = {

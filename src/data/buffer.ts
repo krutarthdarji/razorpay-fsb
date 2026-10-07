@@ -1,10 +1,10 @@
 import type { Outflow } from './types';
 
 /**
- * Spends not scheduled yet, that RazorpayX predicts from the merchant's own
- * account history. This is the personalised part of the recommendation.
+ * The safety buffer, sized by Kosh from the merchant's own account history:
+ * spends that are not scheduled yet but happen every year. Not a rule of thumb.
  */
-export const predictedSpends: Outflow[] = [
+export const bufferBasis: Outflow[] = [
   {
     id: 'refunds',
     label: 'Fee refunds',

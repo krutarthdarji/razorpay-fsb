@@ -2,10 +2,10 @@
  * Mocked forecast. Pure functions, no side effects.
  *
  * The idea in one line:
- *   recommended = balance - scheduled payments - spends we predict (next 45 days)
+ *   safe to invest = balance - payments due (next 45 days) - safety buffer
  *
- * Scheduled payments are on the calendar. Predicted spends come from the
- * merchant's own history: that is what makes the number personal.
+ * The buffer is not a rule of thumb: Kosh sizes it from the merchant's own
+ * history (refunds after admissions, ads before a batch, day-to-day spends).
  */
 import type { CashEvent, Outflow } from '../data/types';
 import { addDays, formatDay } from './dates';
@@ -20,29 +20,31 @@ export function totalOutflows(outflows: Outflow[]): number {
 }
 
 export type SafeAmount = {
+  /** Payments already scheduled for the horizon */
   scheduled: number;
-  predicted: number;
-  /** Balance minus scheduled payments: what looks spare at first glance */
+  /** Safety buffer, sized from the merchant's history */
+  buffer: number;
+  /** Balance minus scheduled payments: what sits idle today */
   surplus: number;
-  /** Everything the next 45 days need: scheduled plus predicted */
+  /** Everything kept aside: scheduled payments plus the buffer */
   keptAside: number;
   /** What we recommend investing. Never below zero. */
   safe: number;
 };
 
-export function safeToInvest(balance: number, scheduled: Outflow[], predicted: Outflow[]): SafeAmount {
+export function safeToInvest(balance: number, scheduled: Outflow[], bufferItems: Outflow[]): SafeAmount {
   const s = totalOutflows(scheduled);
-  const p = totalOutflows(predicted);
+  const b = totalOutflows(bufferItems);
   return {
     scheduled: s,
-    predicted: p,
+    buffer: b,
     surplus: balance - s,
-    keptAside: s + p,
-    safe: Math.max(0, balance - s - p),
+    keptAside: s + b,
+    safe: Math.max(0, balance - s - b),
   };
 }
 
-/** True when the chosen amount dips into money needed for predicted spends */
+/** True when the chosen amount dips into the safety buffer */
 export function isAboveSafe(amount: number, safe: number): boolean {
   return amount > safe;
 }

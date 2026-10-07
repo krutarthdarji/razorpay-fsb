@@ -5,18 +5,19 @@ import { Box, ToastContainer, useTheme } from '@razorpay/blade/components';
 import { MobileShell } from './components/MobileShell';
 import { AnimatedRoutes, type ScreenRoute } from './components/AnimatedRoutes';
 import { AppBottomNav, TAB_PATHS } from './components/AppBottomNav';
+import { AppHeader } from './components/app/AppHeader';
+import { SheetHost } from './components/app/SheetLayer';
 import { Home } from './screens/Home/Home';
-import { Stub } from './screens/Stub/Stub';
+import { Kosh } from './screens/Kosh/Kosh';
+import { OrderPlaced } from './screens/Order/OrderPlaced';
+import { Portfolio } from './screens/Portfolio/Portfolio';
 
 /** Paths are relative to /app */
 const routes: ScreenRoute[] = [
   { path: '', index: true, element: <Home /> },
-  { path: 'insight', element: <Stub title="Safe amount" /> },
-  { path: 'option', element: <Stub title="Choose option" /> },
-  { path: 'invest', element: <Stub title="Invest" /> },
-  { path: 'success', element: <Stub title="Done" /> },
-  { path: 'portfolio', element: <Stub title="Portfolio" /> },
-  { path: 'redeem', element: <Stub title="Redeem" /> },
+  { path: 'kosh', element: <Kosh /> },
+  { path: 'order', element: <OrderPlaced /> },
+  { path: 'portfolio', element: <Portfolio /> },
 ];
 
 /** Holds the space for Blade's fixed BottomNav and keeps it clear of the iPhone home indicator */
@@ -43,6 +44,8 @@ export function DemoApp() {
 
   return (
     <MobileShell>
+      <SheetHost>
+      <AppHeader />
       <Box position="relative" flex={1} overflow="hidden">
         <AnimatedRoutes routes={routes} />
       </Box>
@@ -52,6 +55,7 @@ export function DemoApp() {
         </NavSlot>
       )}
       <ToastContainer offsetBottom={navHeight + theme.spacing[4]} />
+      </SheetHost>
     </MobileShell>
   );
 }

@@ -1,7 +1,7 @@
 /** Layout pieces shared by the landing page sections */
 import styled from 'styled-components';
 import { Badge, Box, Display, Text } from '@razorpay/blade/components';
-import { PAGE_MAX_WIDTH } from '../../components/GlobalNav';
+import { PAGE_MAX_WIDTH } from '../../components/LandingNav';
 
 export function Container({ children }: { children: React.ReactNode }) {
   return (

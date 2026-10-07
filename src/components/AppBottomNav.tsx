@@ -1,36 +1,25 @@
 import { NavLink, useLocation } from 'react-router-dom';
+import { BottomNav, BottomNavItem, HomeIcon, PieChartIcon, SparklesIcon } from '@razorpay/blade/components';
+import { brand } from '../brand';
 import { paths } from '../routes';
-import {
-  BottomNav,
-  BottomNavItem,
-  HomeIcon,
-  MoreHorizontalIcon,
-  SendIcon,
-  TrendingUpIcon,
-  useToast,
-} from '@razorpay/blade/components';
 
 /** Routes that show the bottom nav (top-level tabs) */
-export const TAB_PATHS: string[] = [paths.home, paths.portfolio];
+export const TAB_PATHS: string[] = [paths.home, paths.kosh, paths.portfolio];
 
+/** Three tabs, all part of the job: see your money, ask Kosh, see what's working */
 export function AppBottomNav() {
   const { pathname } = useLocation();
-  const toast = useToast();
-  const notInDemo = () =>
-    toast.show({ content: 'Not part of this demo', color: 'neutral', autoDismiss: true });
-
   return (
     <BottomNav>
       <BottomNavItem title="Home" icon={HomeIcon} as={NavLink} href={paths.home} isActive={pathname === paths.home} />
-      <BottomNavItem title="Payouts" icon={SendIcon} onClick={notInDemo} />
+      <BottomNavItem title={brand.name} icon={SparklesIcon} as={NavLink} href={paths.kosh} isActive={pathname === paths.kosh} />
       <BottomNavItem
-        title="Invest"
-        icon={TrendingUpIcon}
+        title="Portfolio"
+        icon={PieChartIcon}
         as={NavLink}
         href={paths.portfolio}
         isActive={pathname === paths.portfolio}
       />
-      <BottomNavItem title="More" icon={MoreHorizontalIcon} onClick={notInDemo} />
     </BottomNav>
   );
 }

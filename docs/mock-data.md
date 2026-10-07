@@ -22,8 +22,8 @@ All numbers are illustrative. Keep them consistent across screens.
 | Vendors | Various (15 Oct ₹75,000, 12 Nov ₹75,000) | ₹1,50,000 |
 | Total | | ₹12,00,000 |
 
-## Spends RazorpayX predicts (next 45 days)
-Not on any calendar. Learned from the merchant's own account history. This is the personalised part of the recommendation.
+## Safety buffer, sized by Kosh (next 45 days)
+Not a rule of thumb: Kosh sizes it from the merchant's own history, from spends that are not scheduled yet but happen every year.
 | Item | Based on | Date | Amount |
 |---|---|---|---|
 | Fee refunds | Every year after admissions close | 18 Oct | ₹80,000 |
@@ -47,16 +47,17 @@ Late term-fee instalments. Shown on Home, **not counted** in the safe amount: we
 
 ## Recommendation
 - Balance minus scheduled payments: ₹20,00,000 − ₹12,00,000 = ₹8,00,000
-- Spends RazorpayX predicts: ₹3,00,000
-- Needed for the next 45 days: ₹15,00,000
-- Recommended to invest: ₹5,00,000 for about 45 days
+- Safety buffer, sized by Kosh: ₹3,00,000
+- Kept aside: ₹15,00,000
+- Safe to invest: ₹5,00,000 for about 45 days, in ABC Liquid Fund
+- Units allotted: next day (9 Oct). Instant credit on withdrawal: free for 1 day
 - Slider range: ₹10,000 to ₹8,00,000. Warning above ₹5,00,000
 
 ## Options (returns illustrative, pre-tax)
 | Option | Approx return | Earns on ₹5L in 45 days |
 |---|---|---|
-| Liquid Fund (recommended) | ~6.4% a year | ~₹3,945 |
-| Overnight Fund | ~5.8% a year | ~₹3,575 |
+| ABC Liquid Fund (recommended) | ~6.4% a year | ~₹3,945 |
+| ABC Overnight Fund | ~5.8% a year | ~₹3,575 |
 | Sweep FD (benchmark) | ~3.25% a year | ~₹2,003 |
 | Idle in current account | 0% | ₹0 |
 - Formula: amount × annual rate × days ÷ 365

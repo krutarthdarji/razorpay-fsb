@@ -6,15 +6,16 @@ import {
   Badge,
   Box,
   Button,
+  ClockIcon,
   InstantSettlementIcon,
   ShieldIcon,
   SparklesIcon,
   Text,
-  TrendingUpIcon,
   useTheme,
   type IconComponent,
 } from '@razorpay/blade/components';
 import { motion } from 'framer-motion';
+import { brand } from '../../brand';
 import { recommendation } from '../../lib/recommendation';
 import { msToS, toBezier } from '../../lib/motion';
 import { useIsDesktop } from '../../lib/useIsDesktop';
@@ -35,21 +36,8 @@ type ChipProps = { icon: IconComponent; title: string; amount?: number; caption?
 
 function FactChip({ icon: Icon, title, amount, caption }: ChipProps) {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      gap="spacing.3"
-      padding="spacing.4"
-      borderRadius="medium"
-      backgroundColor="surface.background.gray.intense"
-      elevation="highRaised"
-    >
-      <Box
-        padding="spacing.3"
-        borderRadius="medium"
-        backgroundColor="feedback.background.positive.subtle"
-        display="flex"
-      >
+    <Box display="flex" alignItems="center" gap="spacing.3" padding="spacing.4" borderRadius="large" backgroundColor="surface.background.gray.intense" elevation="highRaised">
+      <Box padding="spacing.3" borderRadius="medium" backgroundColor="feedback.background.positive.subtle" display="flex">
         <Icon size="medium" color="feedback.icon.positive.intense" />
       </Box>
       <Box>
@@ -68,10 +56,10 @@ function FactChip({ icon: Icon, title, amount, caption }: ChipProps) {
 
 /** Where each chip sits around the phone on desktop */
 const chipSpots: { top: string; left?: string; right?: string }[] = [
-  { top: '12%', left: '4%' },
-  { top: '8%', right: '4%' },
-  { top: '52%', left: '0%' },
-  { top: '48%', right: '0%' },
+  { top: '10%', left: '2%' },
+  { top: '8%', right: '2%' },
+  { top: '50%', left: '0%' },
+  { top: '46%', right: '0%' },
 ];
 
 type Props = { onDemo: () => void };
@@ -79,38 +67,38 @@ type Props = { onDemo: () => void };
 export const Hero = forwardRef<HTMLDivElement, Props>(function Hero({ onDemo }, ctaRef) {
   const { theme } = useTheme();
   const isDesktop = useIsDesktop();
+  const r = recommendation;
 
   const chips: ChipProps[] = [
-    { icon: ShieldIcon, title: 'Salaries on 1 Nov', caption: 'Covered' },
-    { icon: SparklesIcon, title: 'Recommended for you', amount: recommendation.safe },
-    { icon: InstantSettlementIcon, title: 'Need it back?', caption: 'Instant Redeem' },
-    { icon: TrendingUpIcon, title: `Earns in ${recommendation.days} days`, amount: recommendation.expectedEarnings },
+    { icon: SparklesIcon, title: `Safe for ${r.days} days`, amount: r.safe },
+    { icon: ShieldIcon, title: 'Salaries on 1 Nov', caption: 'Covered first' },
+    { icon: ClockIcon, title: 'Nudge to invested', caption: 'Under 2 minutes' },
+    { icon: InstantSettlementIcon, title: 'Need it back?', caption: 'Instant credit, free for a day' },
   ];
 
   return (
     <HeroBackground>
       <Container>
         <Box display="flex" flexDirection="column" alignItems="center" gap="spacing.6" textAlign="center">
-          <Badge color="primary" size="medium">
-            New in the RazorpayX app
+          <Badge color="primary" size="medium" icon={SparklesIcon}>
+            {`${brand.name} · the treasury agent in your RazorpayX app`}
           </Badge>
           <HighlightHeading
             as="h1"
             size="xlarge"
-            before="RazorpayX tells you "
-            highlight="exactly how much"
+            before="Know exactly what's "
+            highlight="safe to invest."
             after={
               <>
                 <br />
-                idle cash is safe to invest.
+                Invest it in one tap.
               </>
             }
           />
-          <Box maxWidth="620px">
+          <Box maxWidth="640px">
             <Text size="large" color="surface.text.gray.muted" textAlign="center">
-              A recommendation personalised to your business. We read your scheduled payouts, predict the spends
-              that are not on your calendar yet, and give you one amount to invest. Invest it in 3 taps. Withdraw
-              anytime.
+              {brand.name} reads your real cash flow: collections, salaries, GST and vendor bills. It tells you how much
+              can earn, and for how long. Payroll always comes first. Need it back? Instant credit, free for a day.
             </Text>
           </Box>
           <Box ref={ctaRef} display="flex" flexDirection="column" alignItems="center" gap="spacing.3">
@@ -118,13 +106,13 @@ export const Hero = forwardRef<HTMLDivElement, Props>(function Hero({ onDemo }, 
               App Demo
             </Button>
             <Text size="small" color="surface.text.gray.muted">
-              No sign-up. Opens the mobile app demo.
+              Ravi's account · nudge to invested in under 2 minutes
             </Text>
           </Box>
         </Box>
 
         <Box position="relative" marginTop={{ base: 'spacing.9', m: 'spacing.11' }} maxWidth="1000px" marginX="auto">
-          <AppPreview screenHeight={isDesktop ? 600 : 520} />
+          <AppPreview screenHeight={isDesktop ? 640 : 560} />
           {isDesktop &&
             chips.map((chip, i) => (
               <motion.div
