@@ -4,14 +4,14 @@ import { Section, SectionIntro } from './layout';
 const chose = [
   { what: 'An agent, not a calculator', why: 'Merchants want an answer, not a tool.' },
   { what: 'One tap by default', why: 'Habit forms when the effort is near zero.' },
-  { what: 'Recommend by safety and horizon, not top returns', why: 'Trust comes before yield.' },
+  { what: 'Only liquid and short-term debt funds', why: 'Working capital must stay safe and liquid. Trust comes before yield.' },
   { what: 'Free 1-day instant credit', why: 'Removes the last fear: "what if I need it?"' },
   { what: 'Value in rupees vs idle and sweep FD', why: 'That is how owners think.' },
 ];
 
 const leftOut = [
   { what: 'Auto-invest', why: 'Trust first. Automation comes once the habit forms.' },
-  { what: 'Fund research tools', why: 'They recreate the effort we are removing.' },
+  { what: 'Fund research tools', why: 'Eight top-rated funds are enough. More recreates the effort we are removing.' },
   { what: 'Equity and long-term products', why: 'This is working capital, not wealth.' },
   { what: 'Full dashboards', why: 'Focus beats breadth.' },
 ];

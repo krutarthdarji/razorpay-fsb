@@ -1,8 +1,16 @@
 export * from './types';
 export { merchant } from './merchant';
-export { upcomingOutflows } from './outflows';
-export { expectedInflows } from './inflows';
-export { bufferBasis } from './buffer';
-export { investOptions, recommendedOption } from './options';
-export { holding } from './portfolio';
+export {
+  revenueStreams,
+  expenseStreams,
+  yearlyInflows,
+  yearlyOutflows,
+  termFeeIds,
+  balanceAnchor,
+  cushionBasis,
+  revenueNotes,
+  expenseNotes,
+} from './cashflow';
+export { funds, fundById, fundsAsOf, fundsSource } from './funds';
+export type { Fund, FundId } from './funds';
 export { plan } from './plan';

@@ -5,6 +5,7 @@ import { merchant } from '../../data';
 import { formatINR } from '../../lib/format';
 import { Container } from './layout';
 import { brand } from '../../brand';
+import { cycle } from '../../lib/recommendation';
 
 const Band = styled.section(({ theme }) => ({
   paddingTop: theme.spacing[11] * 1.5,
@@ -25,7 +26,7 @@ export const FinalCta = forwardRef<HTMLDivElement, { onDemo: () => void }>(funct
           </Display>
           <Box maxWidth="560px">
             <Text size="large" color="surface.text.staticWhite.subtle" textAlign="center">
-              {merchant.businessName} has {formatINR(merchant.balance)} after admissions. Watch {brand.name} find what's
+              {merchant.businessName} has {formatINR(cycle.startBalance)} after admissions. Watch {brand.name} find what's
               safe, and invest it in under 2 minutes.
             </Text>
           </Box>

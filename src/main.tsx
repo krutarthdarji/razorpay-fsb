@@ -6,6 +6,7 @@ import { bladeTheme } from '@razorpay/blade/tokens';
 import { I18nProvider } from '@razorpay/i18nify-react';
 import '@razorpay/blade/fonts.css';
 import { App } from './App';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { GlobalStyle } from './GlobalStyle';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -14,9 +15,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <I18nProvider initData={{ locale: 'en-IN' }}>
       <BladeProvider themeTokens={bladeTheme} colorScheme="light">
         <GlobalStyle />
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <App />
-        </BrowserRouter>
+        <ErrorBoundary>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <App />
+          </BrowserRouter>
+        </ErrorBoundary>
       </BladeProvider>
     </I18nProvider>
   </React.StrictMode>,

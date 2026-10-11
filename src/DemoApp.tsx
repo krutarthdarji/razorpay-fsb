@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Box, ToastContainer, useTheme } from '@razorpay/blade/components';
 import { MobileShell } from './components/MobileShell';
@@ -11,6 +11,14 @@ import { Home } from './screens/Home/Home';
 import { Kosh } from './screens/Kosh/Kosh';
 import { OrderPlaced } from './screens/Order/OrderPlaced';
 import { Portfolio } from './screens/Portfolio/Portfolio';
+import { Revenue } from './screens/Details/Revenue';
+import { Expenses } from './screens/Details/Expenses';
+import { Liquidity } from './screens/Details/Liquidity';
+import { FundDetail } from './screens/Fund/FundDetail';
+import { PlanProvider, PlanResetOnEntry } from './state/plan';
+import { useDemo } from './state/demo';
+import { JumpSheet } from './components/app/TimeMachine';
+import { paths } from './routes';
 
 /** Paths are relative to /app */
 const routes: ScreenRoute[] = [
@@ -18,6 +26,12 @@ const routes: ScreenRoute[] = [
   { path: 'kosh', element: <Kosh /> },
   { path: 'order', element: <OrderPlaced /> },
   { path: 'portfolio', element: <Portfolio /> },
+  { path: 'revenue', element: <Revenue /> },
+  { path: 'expenses', element: <Expenses /> },
+  { path: 'liquidity', element: <Liquidity /> },
+  { path: 'fund/:id', element: <FundDetail /> },
+  // Anything else under /app goes Home
+  { path: '*', element: <Navigate to={paths.home} replace /> },
 ];
 
 /** Holds the space for Blade's fixed BottomNav and keeps it clear of the iPhone home indicator */
@@ -32,6 +46,7 @@ export function DemoApp() {
   const { pathname } = useLocation();
   const { theme } = useTheme();
   const showBottomNav = TAB_PATHS.includes(pathname);
+  const { today } = useDemo();
 
   // Blade's BottomNav is position: fixed. Measure it so screens don't scroll under it
   // and toasts sit above it.
@@ -44,9 +59,12 @@ export function DemoApp() {
 
   return (
     <MobileShell>
+      <PlanProvider>
+      <PlanResetOnEntry />
       <SheetHost>
       <AppHeader />
-      <Box position="relative" flex={1} overflow="hidden">
+      {/* Keyed by the demo date: when the clock moves, every screen re-reads Kosh's numbers */}
+      <Box key={today} position="relative" flex={1} overflow="hidden">
         <AnimatedRoutes routes={routes} />
       </Box>
       {showBottomNav && (
@@ -55,7 +73,9 @@ export function DemoApp() {
         </NavSlot>
       )}
       <ToastContainer offsetBottom={navHeight + theme.spacing[4]} />
+      <JumpSheet />
       </SheetHost>
+      </PlanProvider>
     </MobileShell>
   );
 }

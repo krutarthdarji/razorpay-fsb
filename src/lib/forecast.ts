@@ -1,141 +1,88 @@
 /**
- * Mocked forecast. Pure functions, no side effects.
+ * Kosh's forecast, as plain functions. Mocked data in, numbers out.
  *
- * The idea in one line:
- *   safe to invest = balance - payments due (next 45 days) - safety buffer
- *
- * The buffer is not a rule of thumb: Kosh sizes it from the merchant's own
- * history (refunds after admissions, ads before a batch, day-to-day spends).
+ * How Kosh reaches a recommendation:
+ *   1. Project the balance day by day from every stream it tracks.
+ *   2. Find the lowest point over the chosen duration.
+ *   3. Keep a cushion for surprises. Recommend the rest.
+ * A longer duration can only lower the lowest point, so the recommendation shrinks.
  */
-import type { CashEvent, Outflow } from '../data/types';
-import { addDays, formatDay } from './dates';
+import type { Stream, YearlyItem } from '../data/types';
+import { addDays, addMonths, daysBetween, formatDay, monthKey, monthsBetween } from './dates';
 
 /** Simple interest: amount × annual rate × days ÷ 365, rounded to the rupee */
 export function earnings(amount: number, annualRatePct: number, days: number): number {
   return Math.round((amount * (annualRatePct / 100) * days) / 365);
 }
 
-export function totalOutflows(outflows: Outflow[]): number {
-  return outflows.reduce((sum, o) => sum + o.amount, 0);
-}
+export type CashEvent = { id: string; label: string; date: string; amount: number; kind: 'in' | 'out'; source?: string };
 
-export type SafeAmount = {
-  /** Payments already scheduled for the horizon */
-  scheduled: number;
-  /** Safety buffer, sized from the merchant's history */
-  buffer: number;
-  /** Balance minus scheduled payments: what sits idle today */
-  surplus: number;
-  /** Everything kept aside: scheduled payments plus the buffer */
-  keptAside: number;
-  /** What we recommend investing. Never below zero. */
-  safe: number;
-};
+const pad = (n: number) => String(n).padStart(2, '0');
 
-export function safeToInvest(balance: number, scheduled: Outflow[], bufferItems: Outflow[]): SafeAmount {
-  const s = totalOutflows(scheduled);
-  const b = totalOutflows(bufferItems);
-  return {
-    scheduled: s,
-    buffer: b,
-    surplus: balance - s,
-    keptAside: s + b,
-    safe: Math.max(0, balance - s - b),
+/** Every movement between `from` and `to` (both included), oldest first */
+export function eventsBetween(
+  streams: { in: Stream[]; out: Stream[] },
+  yearly: { in: YearlyItem[]; out: YearlyItem[] },
+  from: string,
+  to: string,
+): CashEvent[] {
+  const events: CashEvent[] = [];
+  const add = (id: string, label: string, date: string, amount: number, kind: CashEvent['kind'], source: string) => {
+    if (date >= from && date <= to) events.push({ id: `${id}-${date}`, label, date, amount, kind, source });
   };
-}
-
-/** True when the chosen amount dips into the safety buffer */
-export function isAboveSafe(amount: number, safe: number): boolean {
-  return amount > safe;
-}
-
-export type EarningsComparison = {
-  option: number;
-  sweepFd: number;
-  idle: number;
-  /** Extra rupees over sweep FD */
-  moreThanSweepFd: number;
-};
-
-/** Rupee comparison of an option against sweep FD and idle cash */
-export function compareEarnings(
-  amount: number,
-  days: number,
-  optionRatePct: number,
-  sweepFdRatePct: number,
-): EarningsComparison {
-  const option = earnings(amount, optionRatePct, days);
-  const sweepFd = earnings(amount, sweepFdRatePct, days);
-  return { option, sweepFd, idle: 0, moreThanSweepFd: option - sweepFd };
-}
-
-/* ---------- Cash flow over time (for the Home charts) ---------- */
-
-/** Sum of events on or before `date` */
-function totalUpTo(events: CashEvent[], date: string): number {
-  return events.filter((e) => e.date <= date).reduce((sum, e) => sum + e.amount, 0);
-}
-
-export function outflowPayments(outflows: Outflow[]): CashEvent[] {
-  return outflows.flatMap((o) => o.payments);
-}
-
-/** `day` and `month` are the week's first day, split for two-line chart labels ("8" / "Oct") */
-export type WeekFlow = {
-  week: string;
-  day: string;
-  month: string;
-  moneyIn: number;
-  scheduledOut: number;
-  predictedOut: number;
-};
-
-/** Money in, scheduled out and predicted out per week, starting `from`, for `days` days */
-export function weeklyFlows(
-  inflows: CashEvent[],
-  scheduled: CashEvent[],
-  predicted: CashEvent[],
-  from: string,
-  days: number,
-): WeekFlow[] {
-  const weeks: WeekFlow[] = [];
-  for (let start = 0; start < days; start += 7) {
-    const first = addDays(from, start);
-    const last = addDays(from, Math.min(start + 6, days - 1));
-    const inWeek = (e: CashEvent) => e.date >= first && e.date <= last;
-    const sum = (events: CashEvent[]) => events.filter(inWeek).reduce((s, e) => s + e.amount, 0);
-    const [day, month] = formatDay(first).split(' ');
-    weeks.push({
-      week: formatDay(first),
-      day,
-      month,
-      moneyIn: sum(inflows),
-      scheduledOut: sum(scheduled),
-      predictedOut: sum(predicted),
-    });
+  for (const month of monthsBetween(from, to)) {
+    for (const kind of ['in', 'out'] as const) {
+      for (const s of streams[kind]) add(s.id, s.label, `${month}-${pad(s.dayOfMonth)}`, s.amount(month), kind, s.source);
+      for (const y of yearly[kind]) if (y.month === Number(month.slice(5, 7))) add(y.id, y.label, `${month}-${pad(y.day)}`, y.amount, kind, y.source);
+    }
   }
-  return weeks;
+  return events.sort((a, b) => a.date.localeCompare(b.date));
 }
 
-export type BalancePoint = { day: string; invested: number; idle: number };
+export const net = (events: CashEvent[]) => events.reduce((s, e) => s + (e.kind === 'in' ? e.amount : -e.amount), 0);
 
-/**
- * Day-by-day account balance, with expected inflows arriving on time.
- * invested: after investing `invested` today. idle: if nothing is invested.
- */
-export function projectedBalance(
-  balance: number,
-  invested: number,
-  inflows: CashEvent[],
-  outflows: CashEvent[],
-  from: string,
-  days: number,
-): BalancePoint[] {
+export type BalancePoint = { date: string; day: string; balance: number };
+
+/** Balance at the end of each day, from `from` (day 0) to `to` */
+export function dailyBalance(start: number, events: CashEvent[], from: string, to: string): BalancePoint[] {
   const points: BalancePoint[] = [];
-  for (let d = 0; d <= days; d++) {
+  let balance = start;
+  for (let d = 0; d <= daysBetween(from, to); d++) {
     const date = addDays(from, d);
-    const idle = balance - totalUpTo(outflows, date) + totalUpTo(inflows, date);
-    points.push({ day: formatDay(date), idle, invested: idle - invested });
+    for (const e of events) if (e.date === date) balance += e.kind === 'in' ? e.amount : -e.amount;
+    points.push({ date, day: formatDay(date), balance });
   }
   return points;
+}
+
+/** The lowest balance on or before `until` */
+export function lowestPoint(points: BalancePoint[], until: string): BalancePoint {
+  return points.filter((p) => p.date <= until).reduce((low, p) => (p.balance < low.balance ? p : low));
+}
+
+/** Most that can be invested for `months` without the balance dipping into the cushion */
+export function freeFor(points: BalancePoint[], today: string, months: number, cushion: number): number {
+  return Math.max(0, lowestPoint(points, addMonths(today, months)).balance - cushion);
+}
+
+export type MonthRow = { month: string; moneyIn: number; moneyOut: number; net: number; closing: number };
+
+/** Month-by-month money in, money out, net and closing balance */
+export function monthlyProjection(start: number, events: CashEvent[], months: string[]): MonthRow[] {
+  let balance = start;
+  return months.map((month) => {
+    const inMonth = events.filter((e) => monthKey(e.date) === month);
+    const moneyIn = inMonth.filter((e) => e.kind === 'in').reduce((s, e) => s + e.amount, 0);
+    const moneyOut = inMonth.filter((e) => e.kind === 'out').reduce((s, e) => s + e.amount, 0);
+    balance += moneyIn - moneyOut;
+    return { month, moneyIn, moneyOut, net: moneyIn - moneyOut, closing: balance };
+  });
+}
+
+export const roundDown = (amount: number, step: number) => Math.floor(amount / step) * step;
+
+/** Payments, up to `until`, that would need some of the invested money back */
+export function paymentsNeedingIt(points: BalancePoint[], events: CashEvent[], invested: number, cushion: number, until: string): CashEvent[] {
+  const short = new Set(points.filter((p) => p.date <= until && p.balance - invested < cushion).map((p) => p.date));
+  return events.filter((e) => e.kind === 'out' && short.has(e.date));
 }

@@ -1,7 +1,9 @@
-import { Amount, Avatar, Badge, Box, Heading, Text, useTheme } from '@razorpay/blade/components';
+import { Amount, Avatar, Badge, Box, Heading, Text } from '@razorpay/blade/components';
 import { merchant } from '../../data';
-import { recommendation } from '../../lib/recommendation';
+import { formatDay, formatMonths } from '../../lib/dates';
 import { formatINR } from '../../lib/format';
+import { cycle } from '../../lib/recommendation';
+import { Sparkline } from '../../components/app/Sparkline';
 import { Section, SectionIntro } from './layout';
 
 const lookalikes = [
@@ -13,11 +15,10 @@ const lookalikes = [
 ];
 
 export function MerchantSection() {
-  const { theme } = useTheme();
-  const r = recommendation;
-  const owes = r.scheduled;
-  const idle = r.surplus;
-  const total = owes + idle;
+  const r = cycle;
+  const { startBalance: balanceToday, outlook: projection, totals } = cycle;
+  const weekly = projection.filter((_, i) => i % 7 === 0).map((p) => p.balance);
+  const lowIndex = Math.round(projection.findIndex((p) => p.date === r.lowest.date) / 7);
 
   return (
     <Section id="merchant" tone="gray">
@@ -25,7 +26,7 @@ export function MerchantSection() {
         eyebrow="The merchant"
         before="A smart owner who runs the business "
         highlight="from his phone."
-        sub="Defined by a cash pattern, not an industry: money regularly sitting above what the next month needs."
+        sub="Defined by a cash pattern, not an industry: money regularly sitting above what the coming months need."
       />
 
       <Box display="grid" gridTemplateColumns={{ base: '1fr', m: '1fr 1fr' }} gap="spacing.6" marginTop={{ base: 'spacing.9', m: 'spacing.11' }}>
@@ -39,8 +40,9 @@ export function MerchantSection() {
             </Box>
           </Box>
           <Text size="large" marginTop="spacing.6">
-            Term fees push his balance to {formatINR(merchant.balance)}. He owes {formatINR(owes)} over the next {r.days} days.{' '}
-            {formatINR(idle)} sits idle.
+            His balance is {formatINR(balanceToday)} after term fees. Between terms, fees bring in{' '}
+            {formatINR(totals.revenuePerMonth)} a month and costs run {formatINR(totals.expensesPerMonth)}. Some of it is
+            spare. He can't tell how much, or for how long.
           </Text>
           <Box marginTop="spacing.6" paddingLeft="spacing.5" borderLeftWidth="thick" borderLeftColor="surface.border.primary.normal">
             <Text size="large" color="surface.text.gray.subtle">
@@ -61,32 +63,34 @@ export function MerchantSection() {
         <Box padding="spacing.7" borderRadius="xlarge" backgroundColor="surface.background.gray.intense" elevation="lowRaised" display="flex" flexDirection="column">
           <Heading size="small">His cash pattern</Heading>
           <Text color="surface.text.gray.muted" marginTop="spacing.1">
-            Balance after admissions, against what the next {r.days} days need
+            Balance until the next term fees on {formatDay(totals.nextTermFees.date)}
           </Text>
-          <Box marginTop="spacing.6">
-            <Text size="small" color="surface.text.gray.muted">
-              Balance today
-            </Text>
-            <Amount value={merchant.balance} type="heading" size="xlarge" weight="semibold" suffix="none" />
+          <Box marginTop="spacing.5">
+            <Sparkline values={weekly} markIndex={lowIndex} height={96} />
           </Box>
-          <Box display="flex" height="20px" borderRadius="max" overflow="hidden" gap="spacing.1" marginTop="spacing.4">
-            <div style={{ width: `${(owes / total) * 100}%`, backgroundColor: theme.colors.data.background.categorical.gray.intense }} />
-            <div style={{ width: `${(idle / total) * 100}%`, backgroundColor: theme.colors.data.background.categorical.gold.moderate }} />
-          </Box>
-          <Box display="flex" justifyContent="space-between" marginTop="spacing.3">
+          <Box display="grid" gridTemplateColumns="1fr 1fr 1fr" gap="spacing.3" marginTop="spacing.4">
             <Box>
-              <Text size="small" color="surface.text.gray.muted">
-                Owed in {r.days} days
+              <Text size="xsmall" color="surface.text.gray.muted">
+                Today
               </Text>
-              <Amount value={owes} size="large" weight="semibold" suffix="none" />
+              <Amount value={balanceToday} size="medium" weight="semibold" suffix="none" />
             </Box>
-            <Box textAlign="right">
-              <Text size="small" color="feedback.text.notice.intense">
-                Idle for {merchant.idleDays} days, earning ₹0
+            <Box>
+              <Text size="xsmall" color="feedback.text.notice.intense">
+                Lowest, {r.lowest.day}
               </Text>
-              <Amount value={idle} size="large" weight="semibold" suffix="none" color="feedback.text.notice.intense" />
+              <Amount value={r.lowest.balance} size="medium" weight="semibold" suffix="none" color="feedback.text.notice.intense" />
+            </Box>
+            <Box>
+              <Text size="xsmall" color="feedback.text.positive.intense">
+                Surplus for {formatMonths(r.months)}
+              </Text>
+              <Amount value={r.amount} size="medium" weight="semibold" suffix="none" color="feedback.text.positive.intense" />
             </Box>
           </Box>
+          <Text size="small" color="surface.text.gray.muted" marginTop="spacing.3">
+            Sitting idle for {merchant.idleDays} days, earning ₹0.
+          </Text>
 
           <Box marginTop="auto" paddingTop="spacing.7">
             <Text size="small" weight="semibold">

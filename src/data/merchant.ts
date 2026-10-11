@@ -5,6 +5,5 @@ export const merchant: Merchant = {
   ownerName: 'Ravi Anand',
   ownerFirstName: 'Ravi',
   accountName: 'RazorpayX current account',
-  balance: 20_00_000,
   idleDays: 12,
 };

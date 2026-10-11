@@ -3,51 +3,36 @@ export type Merchant = {
   ownerName: string;
   ownerFirstName: string;
   accountName: string;
-  /** Current account balance today, in rupees */
-  balance: number;
   /** How many days the surplus has been sitting idle */
   idleDays: number;
 };
 
-/** A dated movement of money. Dates are ISO strings, e.g. "2026-11-01". */
-export type CashEvent = {
-  date: string;
-  amount: number;
-};
+/** "2026-11" */
+export type MonthKey = string;
 
-export type Outflow = {
+/**
+ * Money that moves around the same day each month, but not the same amount.
+ * Kosh projects each month from the account's history: `amount(month)`.
+ */
+export type Stream = {
   id: string;
   label: string;
-  /** For predicted spends: what the prediction is based on, in plain words */
-  basis?: string;
-  /** Total over the horizon */
-  amount: number;
-  /** When it goes out. More than one payment shows as "Various". */
-  payments: CashEvent[];
+  dayOfMonth: number;
+  /** The Razorpay product that tracks this money today */
+  source: string;
+  amount: (month: MonthKey) => number;
 };
 
-/** Money expected to come in. Shown to the merchant, but not counted in the safe amount. */
-export type Inflow = {
+/** Money that moves once a year, on the same date */
+export type YearlyItem = {
   id: string;
   label: string;
-} & CashEvent;
-
-export type InvestOptionId = 'liquid' | 'overnight' | 'sweepFd' | 'idle';
-
-export type InvestOption = {
-  id: InvestOptionId;
-  name: string;
-  /** Approx annual return, pre-tax, in percent (6.4 means 6.4% a year) */
-  annualRatePct: number;
-  /** A fund the merchant can actually invest in (not a benchmark) */
-  isInvestable: boolean;
-  isRecommended: boolean;
-  /** One plain line on why you'd pick it */
-  note?: string;
+  /** 1 to 12 */
+  month: number;
+  day: number;
+  amount: number;
+  source: string;
 };
 
-export type Holding = {
-  optionId: InvestOptionId;
-  invested: number;
-  daysHeld: number;
-};
+/** Sized by Kosh from the last 12 months */
+export type CushionItem = { id: string; label: string; note: string; amount: number };

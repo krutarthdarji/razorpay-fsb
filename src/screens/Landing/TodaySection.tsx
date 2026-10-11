@@ -10,13 +10,13 @@ import {
   ZapIcon,
   type IconComponent,
 } from '@razorpay/blade/components';
-import { investOptions } from '../../data';
+import { plan } from '../../data';
 import { Section, SectionIntro } from './layout';
 
 const workarounds = [
   { title: 'Leave it idle', good: 'Safe', bad: 'Earns ₹0' },
   { title: 'Hold an oversized buffer', good: 'Feels safe', bad: 'Most of it never earns' },
-  { title: 'Sweep at a guessed limit', good: 'Automatic', bad: `About ${investOptions.sweepFd.annualRatePct}%, and the limit is a guess` },
+  { title: 'Sweep at a guessed limit', good: 'Automatic', bad: `About ${plan.sweepFdPct}% a year, and the limit is a guess` },
   { title: 'Invest by hand on another app', good: 'Better returns', bad: 'Hours of effort and paperwork' },
 ];
 

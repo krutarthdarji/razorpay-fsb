@@ -12,17 +12,17 @@ import {
   type IconComponent,
 } from '@razorpay/blade/components';
 import { formatINR } from '../../lib/format';
-import { formatDay } from '../../lib/dates';
-import { recommendation } from '../../lib/recommendation';
+import { formatDay, formatMonths } from '../../lib/dates';
+import { cycle } from '../../lib/recommendation';
 import { Section, SectionIntro } from './layout';
 
 type Step = { time: string; icon: IconComponent; title: string; body: string };
 
 export function FlowSection({ onDemo }: { onDemo: () => void }) {
-  const r = recommendation;
+  const r = cycle;
   const steps: Step[] = [
     { time: '0:00', icon: BellIcon, title: 'Nudge', body: 'Cash lands. Kosh spots the idle money and nudges.' },
-    { time: '0:15', icon: SparklesIcon, title: 'Recommendation', body: `${formatINR(r.safe)} for ${r.days} days, in ${r.option.name}.` },
+    { time: '0:15', icon: SparklesIcon, title: 'Recommendation', body: `Kosh recommends ${formatINR(r.amount)} for ${formatMonths(r.months)}, split across two top-rated funds.` },
     { time: '0:40', icon: LockIcon, title: 'One tap', body: 'Invest, then confirm with the MPIN used for payouts.' },
     { time: '0:55', icon: CheckCircleIcon, title: 'Order placed', body: `With the allotment date: ${formatDay(r.allotmentDate)}.` },
     { time: '1:10', icon: PieChartIcon, title: 'Portfolio', body: 'Earnings vs idle and sweep FD, in rupees.' },

@@ -7,6 +7,7 @@
 export const brand = {
   name: 'Kosh',
   fullName: 'RazorpayX Kosh',
-  descriptor: 'Treasury agent',
+  /** Kosh is Razorpay's agentic AI initiative for surplus cash */
+  descriptor: "Razorpay's agentic AI",
   meaning: 'Kosh (कोष) means treasury',
 } as const;

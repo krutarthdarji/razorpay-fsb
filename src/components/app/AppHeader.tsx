@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { Avatar, Box, Divider, Text } from '@razorpay/blade/components';
@@ -6,6 +7,7 @@ import { brand } from '../../brand';
 import { merchant } from '../../data';
 import { paths } from '../../routes';
 import { KoshAvatar } from './KoshAvatar';
+import { AccountSheet } from './AccountSheet';
 
 const Bar = styled.header(({ theme }) => ({
   position: 'relative',
@@ -25,6 +27,7 @@ const Logo = styled.img(({ theme }) => ({ height: theme.spacing[6], width: 'auto
 
 /** The app's own top bar, inside the phone column: RazorpayX logo, Kosh, and the owner */
 export function AppHeader() {
+  const [accountOpen, setAccountOpen] = useState(false);
   return (
     <Bar>
       <Brand to={paths.landing} aria-label={`${brand.fullName}, about`}>
@@ -35,7 +38,8 @@ export function AppHeader() {
           <Text weight="semibold">{brand.name}</Text>
         </Box>
       </Brand>
-      <Avatar name={merchant.ownerName} size="small" color="primary" />
+      <Avatar name={merchant.ownerName} size="small" color="primary" onClick={() => setAccountOpen(true)} />
+      <AccountSheet isOpen={accountOpen} onDismiss={() => setAccountOpen(false)} />
     </Bar>
   );
 }

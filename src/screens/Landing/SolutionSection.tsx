@@ -14,9 +14,10 @@ import {
   type IconComponent,
 } from '@razorpay/blade/components';
 import { brand } from '../../brand';
-import { formatDay } from '../../lib/dates';
+import { formatDay, formatMonths } from '../../lib/dates';
 import { formatINR } from '../../lib/format';
-import { recommendation } from '../../lib/recommendation';
+import { cycle } from '../../lib/recommendation';
+import { compare, koshSplit } from '../../lib/funds';
 import { KoshAvatar } from '../../components/app/KoshAvatar';
 import { Section, SectionIntro } from './layout';
 
@@ -40,19 +41,20 @@ function KoshSays({ children }: { children: React.ReactNode }) {
 
 const fixes: { icon: IconComponent; friction: string; fix: string }[] = [
   { icon: HelpCircleIcon, friction: 'Knowledge', fix: `${brand.name} tells you what's safe: the amount, for how long, and where.` },
-  { icon: AlertTriangleIcon, friction: 'Fear', fix: 'Payroll comes first. Every payment, plus a safety buffer Kosh sizes from your history, is kept aside.' },
-  { icon: ZapIcon, friction: 'Effort', fix: 'One tap invests it, inside RazorpayX. No new app, no paperwork.' },
+  { icon: AlertTriangleIcon, friction: 'Fear', fix: 'Payroll comes first. Kosh projects every payment and recommends a cushion before it recommends investing.' },
+  { icon: ZapIcon, friction: 'Effort', fix: 'One tap invests it in top-rated liquid and short-term debt funds, inside RazorpayX.' },
   { icon: InstantSettlementIcon, friction: 'Liquidity', fix: 'Withdraw anytime. Razorpay credits you instantly, free for a day.' },
 ];
 
 const family = [
   { name: 'Cashflow Forecaster', by: 'Agent Studio' },
   { name: 'Agentic banking', by: 'RazorpayX' },
-  { name: `${brand.name}, treasury agent`, by: 'RazorpayX', isUs: true },
+  { name: `${brand.name}, surplus cash agent`, by: 'RazorpayX', isUs: true },
 ];
 
 export function SolutionSection() {
-  const r = recommendation;
+  const r = cycle;
+  const earn = compare(r.amount, koshSplit, r.days);
 
   return (
     <Section id="solution" tone="gray">
@@ -68,15 +70,15 @@ export function SolutionSection() {
         <Box padding="spacing.7" borderRadius="2xlarge" backgroundColor="surface.background.cloud.subtle" display="flex" flexDirection="column" gap="spacing.5">
           <KoshSays>
             <Box display="flex" flexWrap="wrap" alignItems="baseline" columnGap="spacing.2">
-              <Amount value={r.safe} type="heading" size="large" weight="semibold" suffix="none" />
-              <Text size="large">is safe to invest for {r.days} days.</Text>
+              <Amount value={r.amount} type="heading" size="large" weight="semibold" suffix="none" />
+              <Text size="large">is safe to invest for {formatMonths(r.months)}.</Text>
             </Box>
             <Text color="surface.text.gray.muted" marginTop="spacing.2">
-              Recommended: {r.option.name}. Earns about {formatINR(r.comparison.option)}, vs {formatINR(r.comparison.sweepFd)} in your sweep FD.
+              Half in a top-rated liquid fund, half in a short-term debt fund. It could earn about {formatINR(earn.kosh)}, against {formatINR(earn.sweepFd)} in an auto-sweep FD. 100% liquid.
             </Text>
             <Box display="flex" gap="spacing.3" marginTop="spacing.4">
               <Box flex={1}>
-                <Button isFullWidth size="small">{`Invest ${formatINR(r.safe)}`}</Button>
+                <Button isFullWidth size="small">{`Invest ${formatINR(r.amount)}`}</Button>
               </Box>
               <Button size="small" variant="secondary">
                 Customise

@@ -16,7 +16,8 @@ import {
 } from '@razorpay/blade/components';
 import { motion } from 'framer-motion';
 import { brand } from '../../brand';
-import { recommendation } from '../../lib/recommendation';
+import { cycle } from '../../lib/recommendation';
+import { formatMonths } from '../../lib/dates';
 import { msToS, toBezier } from '../../lib/motion';
 import { useIsDesktop } from '../../lib/useIsDesktop';
 import { AppPreview } from './AppPreview';
@@ -67,10 +68,10 @@ type Props = { onDemo: () => void };
 export const Hero = forwardRef<HTMLDivElement, Props>(function Hero({ onDemo }, ctaRef) {
   const { theme } = useTheme();
   const isDesktop = useIsDesktop();
-  const r = recommendation;
+  const r = cycle;
 
   const chips: ChipProps[] = [
-    { icon: SparklesIcon, title: `Safe for ${r.days} days`, amount: r.safe },
+    { icon: SparklesIcon, title: `Kosh recommends, for ${formatMonths(r.months)}`, amount: r.amount },
     { icon: ShieldIcon, title: 'Salaries on 1 Nov', caption: 'Covered first' },
     { icon: ClockIcon, title: 'Nudge to invested', caption: 'Under 2 minutes' },
     { icon: InstantSettlementIcon, title: 'Need it back?', caption: 'Instant credit, free for a day' },
@@ -81,7 +82,7 @@ export const Hero = forwardRef<HTMLDivElement, Props>(function Hero({ onDemo }, 
       <Container>
         <Box display="flex" flexDirection="column" alignItems="center" gap="spacing.6" textAlign="center">
           <Badge color="primary" size="medium" icon={SparklesIcon}>
-            {`${brand.name} · the treasury agent in your RazorpayX app`}
+            {`${brand.name} · Razorpay's agentic AI for your surplus cash`}
           </Badge>
           <HighlightHeading
             as="h1"

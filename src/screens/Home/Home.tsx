@@ -1,62 +1,65 @@
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@razorpay/blade/components';
-import { investOptions, merchant, upcomingOutflows } from '../../data';
-import { cashflow, recommendation } from '../../lib/recommendation';
+import { recommendation, standing } from '../../lib/recommendation';
 import { useDemo } from '../../state/demo';
 import { paths } from '../../routes';
+import { CycleComplete } from '../../components/app/CycleComplete';
 import { Reveal } from '../../components/app/Reveal';
+import { TimeMachine } from '../../components/app/TimeMachine';
 import { HomeHero } from './HomeHero';
-import { KoshNudge } from './KoshNudge';
-import { UpcomingPayments } from './UpcomingPayments';
-import { CashflowCard } from './CashflowCard';
+import { StatCards } from './StatCards';
+import { InvestedCard, KoshCard } from './KoshCard';
+import { CompoundingCard, EarnCard } from './EarnCard';
+import { LiquidityCard } from './LiquidityCard';
 
+/**
+ * Balance, three numbers, Kosh's recommendation, what the money earns, and why it stays liquid.
+ * Once Kosh's cycle is over, the result takes the place of the recommendation.
+ */
 export function Home() {
   const navigate = useNavigate();
-  const { balance, investment, startFlow } = useDemo();
+  const { balance, totalInvested, value, earned, holdings, finished, startFlow } = useDemo();
   const r = recommendation;
-  const fundName = investment ? investOptions[investment.optionId].name : undefined;
+  const s = standing(totalInvested);
+  const toKosh = () => {
+    startFlow();
+    navigate(paths.kosh);
+  };
 
   return (
     <Box paddingBottom="spacing.7">
-      <HomeHero
-        balance={balance}
-        idle={r.surplus}
-        idleDays={merchant.idleDays}
-        invested={investment?.amount ?? 0}
-        fundName={fundName}
-      />
-
-      {/* Cards overlap the blue band */}
-      <Box position="relative" zIndex={1} paddingX="spacing.5" marginTop="-56px" display="flex" flexDirection="column" gap="spacing.5">
+      <HomeHero balance={balance} />
+      <Box padding="spacing.5" paddingTop="spacing.4" display="flex" flexDirection="column" gap="spacing.4">
+        {finished && (
+          <Reveal index={0}>
+            <CycleComplete />
+          </Reveal>
+        )}
         <Reveal index={0}>
-          {investment && fundName ? (
-            <KoshNudge
-              state="invested"
-              invested={investment.amount}
-              fundName={fundName}
-              allotmentDate={r.allotmentDate}
-              onSee={() => navigate(paths.portfolio)}
-            />
-          ) : (
-            <KoshNudge
-              state="recommend"
-              safe={r.safe}
-              days={r.days}
-              earnings={r.expectedEarnings}
-              moreThanSweepFd={r.comparison.moreThanSweepFd}
-              onSee={() => {
-                startFlow();
-                navigate(paths.kosh);
-              }}
-            />
-          )}
+          <StatCards />
         </Reveal>
-        <Reveal index={1}>
-          <UpcomingPayments outflows={upcomingOutflows} />
+        {!finished && (
+          <>
+            <Reveal index={1}>
+              {s.status === 'none' ? (
+                <KoshCard onInvest={toKosh} onExplain={() => navigate(paths.liquidity)} />
+              ) : (
+                <InvestedCard invested={totalInvested} {...s} status={s.status} months={r.months} onPortfolio={() => navigate(paths.portfolio)} onKosh={toKosh} />
+              )}
+            </Reveal>
+            <Reveal index={2}>
+              {s.status === 'none' ? (
+                r.amount > 0 && <EarnCard amount={r.amount} months={r.months} days={r.days} />
+              ) : (
+                <CompoundingCard holdings={holdings} value={value} earned={earned} />
+              )}
+            </Reveal>
+          </>
+        )}
+        <Reveal index={3}>
+          <LiquidityCard />
         </Reveal>
-        <Reveal index={2}>
-          <CashflowCard days={r.days} weeks={cashflow.weeks} moneyIn={cashflow.totalIn} moneyOut={cashflow.totalOut} />
-        </Reveal>
+        <TimeMachine />
       </Box>
     </Box>
   );
