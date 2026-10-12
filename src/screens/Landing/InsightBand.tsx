@@ -16,18 +16,21 @@ export function InsightBand() {
   return (
     <Band>
       <Container>
-        <Box maxWidth="900px" marginX="auto" textAlign="center">
-          <Text size="small" weight="semibold" color="surface.text.staticWhite.muted">
-            THE INSIGHT
+        <Box maxWidth="900px">
+          <Text size="large" weight="semibold" color="surface.text.staticWhite.normal">
+            The insight
           </Text>
-          <Display as="h2" size="medium" weight="regular" color="surface.text.staticWhite.normal" textAlign="center" marginTop="spacing.5">
-            Merchants don't under-invest because they don't want returns.
+          <Display as="h2" size="medium" weight="regular" color="surface.text.staticWhite.normal" marginTop="spacing.4">
+            Owners don't leave cash idle because they don't want returns.
           </Display>
           <Box marginTop="spacing.3">
-            <Display as="span" size="medium" weight="semibold" color="surface.text.staticWhite.normal" textAlign="center">
-              They under-invest because they can't see what's safe.
+            <Display as="span" size="medium" weight="semibold" color="surface.text.staticWhite.normal">
+              They leave it idle because they can't see what's safe to move.
             </Display>
           </Box>
+          <Text size="large" color="surface.text.staticWhite.subtle" marginTop="spacing.5">
+            Answer that one question, and the other three frictions become product work.
+          </Text>
         </Box>
       </Container>
     </Band>

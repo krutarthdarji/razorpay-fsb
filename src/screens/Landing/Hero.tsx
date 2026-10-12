@@ -1,135 +1,106 @@
 import { forwardRef } from 'react';
 import styled from 'styled-components';
-import {
-  Amount,
-  ArrowRightIcon,
-  Badge,
-  Box,
-  Button,
-  ClockIcon,
-  InstantSettlementIcon,
-  ShieldIcon,
-  SparklesIcon,
-  Text,
-  useTheme,
-  type IconComponent,
-} from '@razorpay/blade/components';
-import { motion } from 'framer-motion';
+import { AlertTriangleIcon, ArrowRightIcon, Box, Button, CheckCircleIcon, Display, Text } from '@razorpay/blade/components';
 import { brand } from '../../brand';
-import { cycle } from '../../lib/recommendation';
+import { merchant } from '../../data';
 import { formatMonths } from '../../lib/dates';
-import { msToS, toBezier } from '../../lib/motion';
+import { formatINR } from '../../lib/format';
+import { cycle } from '../../lib/recommendation';
 import { useIsDesktop } from '../../lib/useIsDesktop';
+import { KoshAvatar } from '../../components/app/KoshAvatar';
 import { AppPreview } from './AppPreview';
-import { Container, HighlightHeading } from './layout';
+import { Container, Label } from './layout';
 
 /** Soft blue wash like the razorpay.com/x hero */
 const HeroBackground = styled.section(({ theme }) => ({
   overflow: 'hidden',
-  paddingTop: theme.spacing[11],
+  paddingTop: theme.spacing[10],
+  paddingBottom: theme.spacing[11],
   background: [
     `radial-gradient(ellipse 80% 60% at 50% 0%, ${theme.colors.surface.background.primary.subtle}, transparent)`,
     `linear-gradient(180deg, ${theme.colors.surface.background.cloud.subtle} 0%, ${theme.colors.surface.background.gray.intense} 100%)`,
   ].join(', '),
 }));
 
-type ChipProps = { icon: IconComponent; title: string; amount?: number; caption?: string };
-
-function FactChip({ icon: Icon, title, amount, caption }: ChipProps) {
-  return (
-    <Box display="flex" alignItems="center" gap="spacing.3" padding="spacing.4" borderRadius="large" backgroundColor="surface.background.gray.intense" elevation="highRaised">
-      <Box padding="spacing.3" borderRadius="medium" backgroundColor="feedback.background.positive.subtle" display="flex">
-        <Icon size="medium" color="feedback.icon.positive.intense" />
-      </Box>
-      <Box>
-        <Text size="small" color="surface.text.gray.muted">
-          {title}
-        </Text>
-        {amount !== undefined ? (
-          <Amount value={amount} type="body" size="large" weight="semibold" suffix="none" />
-        ) : (
-          <Text weight="semibold">{caption}</Text>
-        )}
-      </Box>
-    </Box>
-  );
-}
-
-/** Where each chip sits around the phone on desktop */
-const chipSpots: { top: string; left?: string; right?: string }[] = [
-  { top: '10%', left: '2%' },
-  { top: '8%', right: '2%' },
-  { top: '50%', left: '0%' },
-  { top: '46%', right: '0%' },
-];
-
 type Props = { onDemo: () => void };
 
+/**
+ * The whole pitch on one screen: what Kosh is, the problem, our solution, and the
+ * working prototype beside it.
+ */
 export const Hero = forwardRef<HTMLDivElement, Props>(function Hero({ onDemo }, ctaRef) {
-  const { theme } = useTheme();
   const isDesktop = useIsDesktop();
   const r = cycle;
-
-  const chips: ChipProps[] = [
-    { icon: SparklesIcon, title: `Kosh recommends, for ${formatMonths(r.months)}`, amount: r.amount },
-    { icon: ShieldIcon, title: 'Salaries on 1 Nov', caption: 'Covered first' },
-    { icon: ClockIcon, title: 'Nudge to invested', caption: 'Under 2 minutes' },
-    { icon: InstantSettlementIcon, title: 'Need it back?', caption: 'Instant credit, free for a day' },
-  ];
 
   return (
     <HeroBackground>
       <Container>
-        <Box display="flex" flexDirection="column" alignItems="center" gap="spacing.6" textAlign="center">
-          <Badge color="primary" size="medium" icon={SparklesIcon}>
-            {`${brand.name} · Razorpay's agentic AI for your surplus cash`}
-          </Badge>
-          <HighlightHeading
-            as="h1"
-            size="xlarge"
-            before="Know exactly what's "
-            highlight="safe to invest."
-            after={
-              <>
-                <br />
-                Invest it in one tap.
-              </>
-            }
-          />
-          <Box maxWidth="640px">
-            <Text size="large" color="surface.text.gray.muted" textAlign="center">
-              {brand.name} reads your real cash flow: collections, salaries, GST and vendor bills. It tells you how much
-              can earn, and for how long. Payroll always comes first. Need it back? Instant credit, free for a day.
-            </Text>
-          </Box>
-          <Box ref={ctaRef} display="flex" flexDirection="column" alignItems="center" gap="spacing.3">
-            <Button size="large" icon={ArrowRightIcon} iconPosition="right" onClick={onDemo}>
-              App Demo
-            </Button>
-            <Text size="small" color="surface.text.gray.muted">
-              Ravi's account · nudge to invested in under 2 minutes
-            </Text>
-          </Box>
-        </Box>
+        <Box display="grid" gridTemplateColumns={{ base: 'minmax(0, 1fr)', l: 'minmax(0, 1.25fr) minmax(0, 0.75fr)' }} gap={{ base: 'spacing.9', l: 'spacing.10' }} alignItems="center">
+          <Box>
+            <Box display="flex" alignItems="center" gap="spacing.3">
+              <KoshAvatar size="medium" />
+              <Text size="large" weight="semibold">
+                {brand.fullName}
+              </Text>
+            </Box>
 
-        <Box position="relative" marginTop={{ base: 'spacing.9', m: 'spacing.11' }} maxWidth="1000px" marginX="auto">
-          <AppPreview screenHeight={isDesktop ? 640 : 560} />
-          {isDesktop &&
-            chips.map((chip, i) => (
-              <motion.div
-                key={chip.title}
-                style={{ position: 'absolute', ...chipSpots[i] }}
-                initial={{ opacity: 0, y: theme.spacing[5] }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: msToS(theme.motion.delay.moderate) + i * msToS(theme.motion.delay.xquick),
-                  duration: msToS(theme.motion.duration.gentle),
-                  ease: toBezier(theme.motion.easing.entrance),
-                }}
-              >
-                <FactChip {...chip} />
-              </motion.div>
-            ))}
+            <Display as="h1" size="large" weight="semibold" marginTop="spacing.5">
+              Idle business cash earns ₹0.{' '}
+              <Display as="span" size="large" weight="semibold" color="surface.text.primary.normal">
+                {brand.name} puts the spare part to work.
+              </Display>
+            </Display>
+            <Text size="large" color="surface.text.gray.subtle" marginTop="spacing.5">
+              {brand.name} is an AI agent inside the RazorpayX app. It tells a business owner how much of the account
+              balance is safe to invest and for how long, then invests it in one tap. The money stays 100% liquid.
+            </Text>
+
+            <Box display="grid" gridTemplateColumns={{ base: '1fr', m: '1fr 1fr' }} gap="spacing.5" marginTop="spacing.7">
+              <Box padding="spacing.6" borderRadius="xlarge" backgroundColor="feedback.background.negative.subtle">
+                <Box display="flex" alignItems="center" gap="spacing.2">
+                  <AlertTriangleIcon size="medium" color="feedback.icon.negative.intense" />
+                  <Label tone="negative">The problem</Label>
+                </Box>
+                <Text size="large" marginTop="spacing.3">
+                  A current account pays 0% interest. {merchant.ownerFirstName}'s coaching centre has{' '}
+                  <Text as="span" size="large" weight="semibold">
+                    {formatINR(r.startBalance)}
+                  </Text>{' '}
+                  in it. Part of that is spare for months. He can't tell how much, so he invests none of it.
+                </Text>
+              </Box>
+              <Box padding="spacing.6" borderRadius="xlarge" backgroundColor="feedback.background.positive.subtle">
+                <Box display="flex" alignItems="center" gap="spacing.2">
+                  <CheckCircleIcon size="medium" color="feedback.icon.positive.intense" />
+                  <Label tone="positive">Our solution</Label>
+                </Box>
+                <Text size="large" marginTop="spacing.3">
+                  {brand.name} reads his collections and payments on Razorpay and tells him:{' '}
+                  <Text as="span" size="large" weight="semibold">
+                    {formatINR(r.amount)} is safe to invest for {formatMonths(r.months)}.
+                  </Text>{' '}
+                  One tap invests it in liquid funds. He can withdraw any time, credited instantly.
+                </Text>
+              </Box>
+            </Box>
+
+            <Box ref={ctaRef} display="flex" flexDirection={{ base: 'column', s: 'row' }} alignItems={{ base: 'flex-start', s: 'center' }} gap="spacing.4" marginTop="spacing.7">
+              <Button size="large" icon={ArrowRightIcon} iconPosition="right" onClick={onDemo}>
+                App Demo
+              </Button>
+              <Text color="surface.text.gray.subtle">A working prototype. Invest {merchant.ownerFirstName}'s surplus in under 2 minutes.</Text>
+            </Box>
+          </Box>
+
+          <Box>
+            <AppPreview screenHeight={isDesktop ? 640 : 560} />
+            <Box marginTop="spacing.5" textAlign="center">
+              <Label>Live from the prototype</Label>
+              <Text color="surface.text.gray.subtle" marginTop="spacing.1">
+                {merchant.ownerFirstName}'s Home screen. {brand.name} has read his cash flow and shows what is safe to invest.
+              </Text>
+            </Box>
+          </Box>
         </Box>
       </Container>
     </HeroBackground>

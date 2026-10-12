@@ -21,13 +21,13 @@ export const FinalCta = forwardRef<HTMLDivElement, { onDemo: () => void }>(funct
     <Band>
       <Container>
         <Box display="flex" flexDirection="column" alignItems="center" gap="spacing.6" textAlign="center">
-          <Display as="h2" size="medium" weight="regular" color="surface.text.staticWhite.normal" textAlign="center">
+          <Display as="h2" size="medium" weight="semibold" color="surface.text.staticWhite.normal" textAlign="center">
             See {brand.name} work on Ravi's account
           </Display>
           <Box maxWidth="560px">
             <Text size="large" color="surface.text.staticWhite.subtle" textAlign="center">
-              {merchant.businessName} has {formatINR(cycle.startBalance)} after admissions. Watch {brand.name} find what's
-              safe, and invest it in under 2 minutes.
+              {merchant.businessName} has {formatINR(cycle.startBalance)} in its account after term fees. Watch {brand.name} find
+              what's safe to invest, and invest it in under 2 minutes.
             </Text>
           </Box>
           <Box ref={ref}>

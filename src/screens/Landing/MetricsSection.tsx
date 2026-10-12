@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { Box, Display, Heading, RefreshIcon, ShieldIcon, Text, TrendingUpIcon, type IconComponent } from '@razorpay/blade/components';
-import { Section, SectionIntro } from './layout';
+import { Label, Section, SectionBody, SectionIntro } from './layout';
 
 const NorthStar = styled.div(({ theme }) => ({
-  padding: theme.spacing[9],
-  borderRadius: theme.border.radius['2xlarge'],
+  padding: theme.spacing[8],
+  borderRadius: theme.border.radius.xlarge,
   boxShadow: theme.elevation.midRaised,
   background: [
     `radial-gradient(circle at 90% 10%, ${theme.colors.data.background.categorical.purple.intense}, transparent 50%)`,
@@ -13,48 +13,52 @@ const NorthStar = styled.div(({ theme }) => ({
 }));
 
 const metrics: { icon: IconComponent; label: string; title: string; body: string; guard?: boolean }[] = [
-  { icon: TrendingUpIcon, label: 'Merchant value', title: 'Extra ₹ earned', body: 'Compared with leaving it idle and with a sweep FD.' },
-  { icon: RefreshIcon, label: 'Habit', title: 'One-tap acceptance', body: 'And repeat investing within 60 days.' },
-  { icon: ShieldIcon, label: 'Guardrail', title: 'Zero missed payments', body: 'Because of investing. Ever.', guard: true },
+  { icon: TrendingUpIcon, label: 'Merchant value', title: 'Extra rupees earned', body: 'Per merchant, compared with leaving the same money idle in the current account.' },
+  { icon: RefreshIcon, label: 'Habit', title: 'One-tap acceptance and repeat use', body: "How often Kosh's recommendation is accepted as it is, and how many merchants invest again within 60 days." },
+  { icon: ShieldIcon, label: 'Guardrail', title: 'Zero missed payments', body: 'No salary, rent or tax payment ever fails because money was invested.', guard: true },
 ];
 
 export function MetricsSection() {
   return (
-    <Section id="metrics" tone="gray">
-      <SectionIntro eyebrow="How we'd measure it" before="One number tells us " highlight="it works." />
+    <Section id="metrics">
+      <SectionIntro
+        step="09"
+        label="How we'd measure it"
+        title="One number tells us "
+        highlight="it works."
+        sub="The goal is a change in behaviour: spare cash that used to sit now gets invested. So that is what we count."
+      />
 
-      <Box marginTop={{ base: 'spacing.9', m: 'spacing.11' }}>
+      <SectionBody>
         <NorthStar>
-          <Text size="small" weight="semibold" color="surface.text.staticWhite.muted">
-            NORTH STAR
+          <Text size="large" weight="semibold" color="surface.text.staticWhite.normal">
+            North star metric
           </Text>
           <Display as="h3" size="medium" weight="semibold" color="surface.text.staticWhite.normal" marginTop="spacing.3">
             Share of idle surplus put to work
           </Display>
           <Text size="large" color="surface.text.staticWhite.subtle" marginTop="spacing.3">
-            It measures the behaviour change directly.
+            Of all the spare cash Kosh finds across merchants, how much actually gets invested.
           </Text>
         </NorthStar>
 
-        <Box display="grid" gridTemplateColumns={{ base: '1fr', m: 'repeat(3, 1fr)' }} gap="spacing.6" marginTop="spacing.6">
+        <Box display="grid" gridTemplateColumns={{ base: '1fr', m: 'repeat(3, 1fr)' }} gap="spacing.5" marginTop="spacing.5">
           {metrics.map(({ icon: Icon, label, title, body, guard }) => (
             <Box key={label} padding="spacing.7" borderRadius="xlarge" backgroundColor="surface.background.gray.intense" borderWidth="thin" borderColor={guard ? 'surface.border.gray.normal' : 'surface.border.gray.subtle'}>
               <Box display="flex" alignItems="center" gap="spacing.2">
-                <Icon size="medium" color={guard ? 'feedback.icon.notice.intense' : 'surface.icon.primary.normal'} />
-                <Text size="small" weight="semibold" color={guard ? 'feedback.text.notice.intense' : 'surface.text.primary.normal'}>
-                  {label.toUpperCase()}
-                </Text>
+                <Icon size="large" color={guard ? 'feedback.icon.notice.intense' : 'surface.icon.primary.normal'} />
+                <Label tone={guard ? 'notice' : 'primary'}>{label}</Label>
               </Box>
               <Heading size="large" marginTop="spacing.4">
                 {title}
               </Heading>
-              <Text color="surface.text.gray.muted" marginTop="spacing.2">
+              <Text size="large" color="surface.text.gray.subtle" marginTop="spacing.2">
                 {body}
               </Text>
             </Box>
           ))}
         </Box>
-      </Box>
+      </SectionBody>
     </Section>
   );
 }

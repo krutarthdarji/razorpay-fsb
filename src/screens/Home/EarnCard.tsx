@@ -7,14 +7,14 @@ import type { Holding } from '../../state/demo';
 import { EarnCompare } from '../../components/app/EarnCompare';
 import { CycleGrowth } from '../../components/app/CycleGrowth';
 
-/** Before investing: what the surplus could earn through Kosh, against an auto-sweep FD and sitting idle */
+/** Before investing: what the surplus could earn through Kosh, against sitting idle in the current account */
 export function EarnCard({ amount, months, days }: { amount: number; months: number; days: number }) {
   return (
     <Card padding="spacing.5" elevation="lowRaised">
       <CardBody>
         <Heading size="small">What your surplus could earn</Heading>
         <Text size="small" color="surface.text.gray.muted" marginTop="spacing.1">
-          {formatINR(amount)} over {formatMonths(months)}, in three places
+          {formatINR(amount)} over {formatMonths(months)}: invested, or left idle
         </Text>
         <Box marginTop="spacing.4">
           <EarnCompare amount={amount} allocations={koshSplit} months={months} days={days} />

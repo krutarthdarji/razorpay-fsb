@@ -98,21 +98,23 @@ export const growTo = (amount: number, pace: number, days: number) => Math.round
 /** What `amount` could earn over `days` at a yearly pace */
 export const couldEarn = (amount: number, pace: number, days: number) => growTo(amount, pace, days) - amount;
 
-/** Same money, three places: Kosh's funds, an auto-sweep FD, the current account */
+/**
+ * What `amount` earns in an auto-sweep FD over `days`, at the reference rate, to the
+ * nearest ₹100. Simple interest. Quoted on the landing page only.
+ */
+export const sweepFdEarns = (amount: number, days: number) => Math.round((amount * (plan.sweepFd.referencePct / 100) * days) / 365 / 100) * 100;
+
+/** Same money, two places: Kosh's funds, or idle in the current account (which pays nothing) */
 export function compare(amount: number, allocations: Allocation[], days: number) {
-  const kosh = couldEarn(amount, yearlyPace(allocations), days);
-  // An FD pays simple interest for the days held
-  const sweepFd = Math.round((amount * (plan.sweepFdPct / 100) * days) / 365);
-  return { kosh, sweepFd, idle: 0, overSweepFd: kosh - sweepFd };
+  return { kosh: couldEarn(amount, yearlyPace(allocations), days), idle: 0 };
 }
 
-/** Earnings month by month in three places, for the comparison graph */
+/** Earnings month by month, invested and idle, for the comparison graph */
 export function growthSeries(amount: number, allocations: Allocation[], months: number) {
   const pace = yearlyPace(allocations);
   return Array.from({ length: months + 1 }, (_, m) => ({
     month: m === 0 ? 'Today' : `${m} mo`,
     kosh: couldEarn(amount, pace, (m * 365) / 12),
-    sweepFd: Math.round((amount * (plan.sweepFdPct / 100) * m) / 12),
     idle: 0,
   }));
 }

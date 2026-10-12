@@ -8,6 +8,7 @@ import { Hero } from './Hero';
 import { ProblemSection } from './ProblemSection';
 import { MerchantSection } from './MerchantSection';
 import { TodaySection } from './TodaySection';
+import { FrictionSection } from './FrictionSection';
 import { InsightBand } from './InsightBand';
 import { SolutionSection } from './SolutionSection';
 import { FlowSection } from './FlowSection';
@@ -20,8 +21,10 @@ import { Footer } from './Footer';
 import { FloatingDemoButton } from './FloatingDemoButton';
 
 /**
- * The pitch, in the order a reviewer asks: problem, merchant, today's friction,
- * the insight, the solution, the flow, why us and why mobile, decisions, metrics, impact.
+ * The pitch, in the order the brief asks for it. The hero states the problem and the
+ * solution; then ten numbered sections: the problem, who it's for, how it's handled
+ * today, what has stopped adoption, the solution, how it works, how it's made
+ * possible, decisions, metrics and impact.
  */
 export function Landing() {
   const { theme } = useTheme();
@@ -42,6 +45,7 @@ export function Landing() {
       <ProblemSection />
       <MerchantSection />
       <TodaySection />
+      <FrictionSection />
       <InsightBand />
       <SolutionSection />
       <FlowSection onDemo={goToDemo} />

@@ -5,33 +5,42 @@
 - Part of Razorpay's agentic family, alongside Agent Studio's Cashflow Forecaster and RazorpayX agentic banking.
 
 ## The problem
-- The money exists: about ₹25 lakh crore idle in current accounts.
-- The intent exists: owners hate idle money.
-- The behaviour doesn't: 86M+ MSMEs, about 1.4M institutional fund folios.
-- Insight: merchants don't under-invest because they don't want returns. They under-invest because they can't see what's safe.
+- A current account pays 0% interest (banks are not allowed to pay any). About ₹30 lakh crore sits in demand deposits at Indian banks (RBI, Feb 2026).
+- Owners want returns. What stops them is one question nobody answers: "How much of my balance can I safely spare, and for how long?"
+- Insight: owners don't leave cash idle because they don't want returns. They leave it idle because they can't see what's safe to move.
 
 ## The merchant
-- A smart SME owner who runs the business from the phone. Defined by a cash pattern, not an industry: money regularly sitting above what the next month needs.
+Businesses that collect first and spend later: customers pay in advance, costs come month by month, so cash piles up after each collection.
+- **Fee-based education:** coaching centres, preschools, tuition and skill institutes. Term or yearly fees in 2 to 4 windows; salaries and rent monthly.
+- **Membership businesses:** gyms, fitness and yoga studios, sports academies. 3, 6 or 12-month memberships paid up front; rent and trainers monthly.
+- **Advance-booking businesses:** tour operators, travel agencies, wedding and event planners. Advances at booking; vendors paid near the date.
+- **A merchant qualifies when all five are true:** paid in advance · costs fixed and dated · balance ₹5 lakh or more above upcoming payments for 60 days or longer (`plan.eligibility`) · no overdraft or working-capital loan · owner-run on the phone, with collections and payouts both on Razorpay.
+- **Not for** (stress test): traders, wholesalers and D2C brands (cash tied in stock, they borrow) · anyone with a working-capital loan (repay first) · funded startups and larger companies (finance team, desktop) · merchants with under ₹5 lakh to spare (reward too small).
 - Job: "Never miss a payment, and don't let the rest sit wasted."
-- Ravi, Anand Coaching Centre: ₹20L after term fees. Between terms, fees bring ₹7.5L a month and costs run ₹10.2L. ₹5L stays spare until next term fees.
+- Ravi, Anand Coaching Centre (segment one): about ₹26L after term fees. Between terms, fees bring about ₹8L a month and costs run about ₹10.9L. ₹5L stays spare for 6 months.
 
 ## Today and the friction
-- Leave it idle, hold an oversized buffer, sweep at a guessed limit, or invest by hand on another app. Every option is a trade-off.
-- Frictions: Knowledge (what's spare?), Fear (what if payroll bounces?), Effort (another platform, paperwork), Liquidity (what if I need it tomorrow?).
+- Four options, each with what it earns on ₹5,00,000 over 6 months: leave it idle (₹0), keep a big buffer (₹0), auto-sweep into an FD (about 4% a year as a reference, about ₹10,000), invest by hand on another app (about 6.7% a year, about ₹16,419). The conclusion comes after the four: every option forces a trade-off, and none says how much is spare.
+- Frictions that have stopped adoption: Knowledge (how much can I spare?), Fear (what if salaries bounce?), Effort (another app, another KYC), Liquidity (what if I need it tomorrow?).
 
 ## The solution
 - Kosh, Razorpay's agentic AI, projects the real cash flow and recommends: "Invest ₹5,00,000 of your surplus for 6 months", in top-rated liquid and short-term debt funds. More returns, 100% liquid.
 - Knowledge → the agent's answer. Fear → every payment is projected and a cushion for misc expenses is kept first. Effort → one tap. Liquidity → instant credit, free for a day.
 
 ## Landing page (`/`)
-Responsive, razorpay.com/x look. Sections in order: Hero (live app preview), Problem, Merchant, Today (trade-offs and frictions), Insight, Solution, Flow, Why Razorpay and why mobile, Decisions, Metrics, Impact, closing CTA. App Demo button centred in the hero; docks at the bottom once it scrolls away; steps aside at the closing CTA.
+Responsive, razorpay.com/x look. Written for the jury: it must be enough on its own to explain the idea.
+- **Hero:** what Kosh is in one sentence, a Problem card and an Our solution card side by side, the App Demo button, and the live Home screen with a caption saying what it shows.
+- **Ten numbered sections, in the brief's order:** 01 The problem (three sourced numbers, then the question nobody answers) · 02 Who it's for (three segments, the five-point qualifying rule, who it is not for, then Ravi) · 03 How it's handled today (four options, then the trade-off) · 04 What has stopped adoption (four frictions) · the insight · 05 The solution (each friction and what Kosh does about it, then the result for Ravi) · 06 How it works (five prototype screens, each with what Kosh does and what the owner does; no timestamps) · 07 How it's made possible (what Razorpay already has, what Kosh adds, why the phone) · 08 Product decisions · 09 Metrics · 10 The bigger picture · closing CTA.
+- **Type rules:** every section starts the same way: numbered label, strong title with one phrase in blue, one line saying what the section shows. Labels are sentence case at body size (no small grey capitals). Key statements are large and dark; muted grey is only for sources and footnotes.
+- **Screens:** the five in "How it works" are captured from the prototype (`src/assets/flow/`). Re-capture them when those screens change.
+- App Demo button in the hero docks at the bottom on scroll.
 
 ## Live dates
 - The app runs on the real date. Balance, what's paid or expected this month, the projection and Kosh's recommendation are all worked out from it. The order screen shows the real next working day for allotment.
 
 ## One cycle (the whole demo)
 - Kosh makes one recommendation when the demo starts: ₹5,00,000 for 6 months. It is fixed. Kosh already looked across all 6 months to reach it (the lowest balance on the way, less its cushion), so nothing in between changes it: no new amount to add, no withdrawal to make.
-- The demo ends when the 6 months do. Then Home, Kosh and Portfolio show **Cycle complete**: what the surplus earned, its growth graph, the same money in an auto-sweep FD and idle, and **Reset demo**. No more fast-forward or investing; withdrawing still works.
+- The demo ends when the 6 months do. Then Home, Kosh and Portfolio show **Cycle complete**: what the surplus earned, its growth graph, the same money left idle, and **Reset demo**. No more fast-forward or investing; withdrawing still works.
 
 ## Demo controls
 - **Fast-forward to allotment** and **Fast-forward 1 month**, in a dashed "Demo controls" card on the order page, Home, Kosh and Portfolio. The card shows the months done (6 segments), the date the demo ends, and what the money has grown to.
@@ -48,7 +57,7 @@ Nudge → recommendation → one-tap invest (MPIN) → order placed with allotme
 - Balance hero.
 - Three stat cards, each opens a detail screen: **Monthly revenue** (average coming in), **Estimated expenses** (average going out), **Projected liquid money** (the lowest balance Kosh projects, and its date).
 - **Kosh's recommendation** card (same type scale as the Kosh page: title, message, then detail): "Invest ₹5,00,000 of your surplus for 6 months." More returns, 100% liquid, no lock-in. A bar splits today's balance into for your payments, Kosh's cushion, surplus to invest. "Why?" opens how Kosh arrived at it. CTA: **"Put my ₹5,00,000 to work"**.
-- **What your surplus could earn** card (before investing): growth graph and bars for invested through Kosh vs auto-sweep FD vs idle in current account, with the extra rupees.
+- **What your surplus could earn** card (before investing): growth graph and bars for invested through Kosh vs idle in the current account (₹0), with the extra rupees. No FD comparison in the app.
 - **Your money is compounding** card (after investing): roughly what it has earned, earns a day, and a graph of the money across the 6 months (darker: so far; lighter: where it is heading). All figures approximate.
 - After investing, the **Kosh's recommendation** card shows "You've invested" next to "Kosh recommends", with Kosh's suggestion when they differ: invest the gap, or you might need to withdraw the excess.
 - **Liquidity** card: your liquidity stays 100% intact. You withdraw, Razorpay credits you instantly (1 day of free credit), the fund pays Razorpay next working day.
@@ -106,6 +115,6 @@ Nudge → recommendation → one-tap invest (MPIN) → order placed with allotme
 
 ## Metrics
 - North star: share of idle surplus put to work.
-- Merchant value: extra ₹ earned vs idle and sweep FD.
+- Merchant value: extra ₹ earned vs leaving the money idle.
 - Habit: one-tap acceptance rate; repeat investing within 60 days.
 - Guardrail: zero missed payments because of investing.

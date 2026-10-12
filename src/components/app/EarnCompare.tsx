@@ -10,7 +10,6 @@ import {
   Text,
   useTheme,
 } from '@razorpay/blade/components';
-import { plan } from '../../data';
 import { compare, growthSeries, type Allocation } from '../../lib/funds';
 import { formatApprox, formatINR } from '../../lib/format';
 import { msToS, toBezier } from '../../lib/motion';
@@ -18,21 +17,19 @@ import { msToS, toBezier } from '../../lib/motion';
 type Props = { amount: number; allocations: Allocation[]; months: number; days: number; showGraph?: boolean };
 
 /**
- * Same money, three places: invested through Kosh, in an auto-sweep FD, or idle
- * in the current account. A growth graph and three bars, in rupees.
+ * Same money, two places: invested through Kosh, or idle in the current account,
+ * where it earns nothing. A growth graph and two bars, in rupees.
  */
 export function EarnCompare({ amount, allocations, months, days, showGraph = true }: Props) {
   const { theme } = useTheme();
   const c = compare(amount, allocations, days);
   const colors = {
     kosh: theme.colors.data.background.categorical.green.intense,
-    sweepFd: theme.colors.data.background.categorical.gold.moderate,
     idle: theme.colors.data.background.categorical.gray.intense,
   };
   const rows = [
     { key: 'kosh', label: 'Invested through Kosh', caption: 'Liquid and short-term debt funds', value: c.kosh, color: colors.kosh, best: true },
-    { key: 'sweepFd', label: 'Auto-sweep FD', caption: `About ${plan.sweepFdPct}% a year`, value: c.sweepFd, color: colors.sweepFd, best: false },
-    { key: 'idle', label: 'Idle in current account', caption: '0% interest', value: c.idle, color: colors.idle, best: false },
+    { key: 'idle', label: 'Idle in your current account', caption: 'A current account pays 0% interest', value: c.idle, color: colors.idle, best: false },
   ];
   const max = Math.max(1, c.kosh);
 
@@ -47,7 +44,6 @@ export function EarnCompare({ amount, allocations, months, days, showGraph = tru
             <ChartYAxis width={52} tickFormatter={(v: number) => (v >= 1000 ? `₹${Math.round(v / 1000)}K` : `₹${v}`)} />
             <ChartTooltip formatter={(v) => formatINR(Number(v))} />
             <ChartArea dataKey="kosh" name="Through Kosh" type="linear" stackId="kosh" color="data.background.categorical.green.intense" />
-            <ChartArea dataKey="sweepFd" name="Auto-sweep FD" type="linear" stackId="fd" color="data.background.categorical.gold.moderate" />
             <ChartArea dataKey="idle" name="Idle" type="linear" stackId="idle" color="data.background.categorical.gray.intense" />
           </ChartAreaWrapper>
         </Box>
@@ -86,7 +82,7 @@ export function EarnCompare({ amount, allocations, months, days, showGraph = tru
 
       <Box marginTop="spacing.4" padding="spacing.4" borderRadius="large" backgroundColor="feedback.background.positive.subtle">
         <Text weight="semibold" color="feedback.text.positive.intense">
-          About {formatINR(c.overSweepFd)} more than an auto-sweep FD. About {formatINR(c.kosh)} more than leaving it idle.
+          About {formatINR(c.kosh)} more than leaving it idle in your current account.
         </Text>
       </Box>
       <Text size="xsmall" color="surface.text.gray.muted" marginTop="spacing.2">

@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Box, Button, CheckCircleIcon, Heading, RefreshIcon, Text, useToast } from '@razorpay/blade/components';
-import { plan } from '../../data';
 import { formatDay, formatMonths } from '../../lib/dates';
 import { formatApprox, formatINR } from '../../lib/format';
 import { cycle } from '../../lib/recommendation';
@@ -26,19 +25,16 @@ const Inner = styled.div(({ theme }) => ({
 
 /**
  * The end of the demo: Kosh's cycle is over. What the surplus grew to, against the
- * same money in an auto-sweep FD or sitting idle, and a way to start again.
+ * same money sitting idle in the current account, and a way to start again.
  */
 export function CycleComplete() {
   const { totalInvested, earned, reset } = useDemo();
   const navigate = useNavigate();
   const toast = useToast();
-  // Compare like with like: the same money, for the same days, at simple FD interest
   const principal = totalInvested || cycle.amount;
-  const sweepFd = Math.round((principal * (plan.sweepFdPct / 100) * cycle.days) / 365);
   const rows = [
     { label: 'Through Kosh', value: formatApprox(earned), strong: true },
-    { label: 'In an auto-sweep FD', value: formatApprox(sweepFd), strong: false },
-    { label: 'Idle in the account', value: formatINR(0), strong: false },
+    { label: 'Idle in the current account', value: formatINR(0), strong: false },
   ];
 
   return (

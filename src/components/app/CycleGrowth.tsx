@@ -71,8 +71,9 @@ export function CycleGrowth() {
           <ChartXAxis dataKey="month" ticks={ticks} interval={0} padding={{ left: 8, right: 24 }} />
           <ChartYAxis domain={[low - span * 0.15, end + span * 0.15]} allowDataOverflow width={64} tickFormatter={(v: number) => `₹${(v / 1_00_000).toFixed(2)}L`} />
           <ChartTooltip formatter={(v) => formatINR(Number(v))} />
-          {!finished && <ChartArea dataKey="ahead" name="Projected" type="monotone" stackId="ahead" color="data.background.categorical.green.subtle" />}
-          <ChartArea dataKey="soFar" name="So far" type="monotone" stackId="soFar" color="data.background.categorical.green.intense" />
+          {/* In Blade's area charts the `subtle` shade fills more solidly than `intense`, so it marks the part already earned */}
+          <ChartArea dataKey="soFar" name="So far" type="monotone" stackId="soFar" color="data.background.categorical.green.subtle" />
+          {!finished && <ChartArea dataKey="ahead" name="Projected" type="monotone" stackId="ahead" color="data.background.categorical.green.intense" />}
         </ChartAreaWrapper>
       </Box>
       <Text size="xsmall" color="surface.text.gray.muted" marginTop="spacing.3">

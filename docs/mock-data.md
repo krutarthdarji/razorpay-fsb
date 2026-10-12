@@ -30,9 +30,10 @@ Merchant numbers are illustrative. Fund numbers are real. Source of truth is `sr
 | Where | Earns |
 |---|---|
 | Through Kosh (50% ABSL Liquid, 50% Tata Money Market, compounding at their last-12-month pace of 6.69%) | ₹16,419 |
-| Auto-sweep FD at 3.25% a year (HDFC Bank's 30 to 45 day FD rate, Sep 2026) | ₹8,103 |
+| Auto-sweep FD at a reference rate of 4% a year (landing page only) | about ₹10,000 |
 | Idle in current account | ₹0 |
-- ₹8,316 more than an auto-sweep FD. Earns about ₹89 a day.
+- Earns about ₹89 a day. Inside the app Kosh is compared only with idle cash.
+- FD rate depends on how long the money stays (ICICI Bank, deposits under ₹3 crore, 12 Oct 2026): 7 to 29 days 3.5% · 30 to 45 days 4.25% · 46 to 60 days 4.5% · 61 to 90 days 4.75% · 91 to 184 days 5.25% · 185 days to under 1 year 5.5% · 1 year and over 6.25%. Breaking an FD early costs a further 0.5%. Swept money moves in and out, so the landing page quotes one reference rate: 4% a year. Rates live in `plan.sweepFd`.
 
 ## Funds (real)
 NAV history is real AMFI data via api.mfapi.in, snapshot 9 Oct 2026 in `src/data/funds.generated.json` (`node scripts/fetch-funds.mjs` refreshes it; scheme codes from AMFI's master list). Ratings are Groww's, with fund size, minimum and exit load as published on 9 Oct 2026. All Direct Plan, Growth.

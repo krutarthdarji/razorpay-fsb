@@ -29,9 +29,10 @@ const Logo = styled.img(({ theme }) => ({ height: theme.spacing[7], width: 'auto
 
 const links = [
   { label: 'Problem', href: '#problem' },
-  { label: 'Merchant', href: '#merchant' },
+  { label: "Who it's for", href: '#merchant' },
+  { label: 'Today', href: '#today' },
   { label: 'Solution', href: '#solution' },
-  { label: 'Flow', href: '#flow' },
+  { label: 'How it works', href: '#flow' },
   { label: 'Decisions', href: '#decisions' },
   { label: 'Metrics', href: '#metrics' },
 ];

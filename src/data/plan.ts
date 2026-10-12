@@ -16,11 +16,37 @@ export const plan = {
   roundTo: 50_000,
   /** Razorpay credits withdrawals instantly; the credit is free for this many days */
   freeCreditDays: 1,
+  /**
+   * Who Kosh is for: a balance this far above upcoming payments, for at least this long.
+   * Below it the reward is too small to change behaviour (₹5 lakh for 60 days earns about ₹5,400).
+   */
+  eligibility: { minSurplus: 5_00_000, minDays: 60 },
   /** Smallest amount, and the step for the slider and its + and − buttons */
   slider: { min: 10_000, step: 10_000 },
   /**
-   * What an auto-sweep FD pays on short deposits. HDFC Bank's 30 to 45 day FD rate
-   * was 3.25% a year in Sep 2026; sweep-in FDs earn the same rate as the matching FD.
+   * What an auto-sweep FD pays, by how long the money stays. Swept-in money earns the
+   * bank's FD rate for the days it was actually held. These are ICICI Bank's rates for
+   * deposits under ₹3 crore, effective 12 Oct 2026 (ICICI is a RazorpayX partner bank).
+   * The landing page quotes one reference rate, `referencePct`: swept money moves in and
+   * out, so it mostly earns the 1 to 2 month rates (4.25% to 4.5%), less the 0.5% charged
+   * each time an FD is broken early. About 4% a year.
+   * Inside the app, Kosh is compared only with idle cash, which earns nothing.
    */
-  sweepFdPct: 3.25,
+  sweepFd: {
+    source: 'ICICI Bank FD rates, 12 Oct 2026',
+    /** The one rate the landing page quotes for a sweep FD */
+    referencePct: 4,
+    /** No interest if withdrawn within this many days */
+    minDays: 7,
+    slabs: [
+      { upToDays: 29, pct: 3.5 },
+      { upToDays: 45, pct: 4.25 },
+      { upToDays: 60, pct: 4.5 },
+      { upToDays: 90, pct: 4.75 },
+      { upToDays: 184, pct: 5.25 },
+      { upToDays: 364, pct: 5.5 },
+      { upToDays: Infinity, pct: 6.25 },
+    ],
+    earlyBreakPenaltyPct: 0.5,
+  },
 };

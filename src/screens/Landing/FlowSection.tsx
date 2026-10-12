@@ -1,66 +1,113 @@
-import {
-  ArrowRightIcon,
-  BellIcon,
-  Box,
-  Button,
-  CheckCircleIcon,
-  Heading,
-  LockIcon,
-  PieChartIcon,
-  SparklesIcon,
-  Text,
-  type IconComponent,
-} from '@razorpay/blade/components';
+import styled from 'styled-components';
+import { ArrowRightIcon, Box, Button, Heading, Text } from '@razorpay/blade/components';
+import { brand } from '../../brand';
+import { merchant, plan } from '../../data';
+import { formatMonths } from '../../lib/dates';
 import { formatINR } from '../../lib/format';
-import { formatDay, formatMonths } from '../../lib/dates';
 import { cycle } from '../../lib/recommendation';
-import { Section, SectionIntro } from './layout';
+import recommendation from '../../assets/flow/1-recommendation.webp';
+import planShot from '../../assets/flow/2-plan.webp';
+import order from '../../assets/flow/3-order.webp';
+import growth from '../../assets/flow/4-growth.webp';
+import withdraw from '../../assets/flow/5-withdraw.webp';
+import { Label, Section, SectionBody, SectionIntro } from './layout';
+import { PhoneShot } from './PhoneShot';
 
-type Step = { time: string; icon: IconComponent; title: string; body: string };
+/** Side by side on phones (screen, then what happens); five columns on wide screens */
+const Steps = styled.div(({ theme }) => ({
+  display: 'grid',
+  gap: theme.spacing[8],
+  [`@media (min-width: ${theme.breakpoints.l}px)`]: { gridTemplateColumns: 'repeat(5, 1fr)', gap: theme.spacing[5] },
+}));
+
+const Step = styled.div(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: '42% 1fr',
+  gap: theme.spacing[5],
+  alignItems: 'center',
+  // Keep each step's text right under its screen, whatever the neighbours' heights
+  alignContent: 'start',
+  [`@media (min-width: ${theme.breakpoints.l}px)`]: { gridTemplateColumns: '1fr', alignItems: 'start', gap: theme.spacing[6] },
+}));
 
 export function FlowSection({ onDemo }: { onDemo: () => void }) {
   const r = cycle;
-  const steps: Step[] = [
-    { time: '0:00', icon: BellIcon, title: 'Nudge', body: 'Cash lands. Kosh spots the idle money and nudges.' },
-    { time: '0:15', icon: SparklesIcon, title: 'Recommendation', body: `Kosh recommends ${formatINR(r.amount)} for ${formatMonths(r.months)}, split across two top-rated funds.` },
-    { time: '0:40', icon: LockIcon, title: 'One tap', body: 'Invest, then confirm with the MPIN used for payouts.' },
-    { time: '0:55', icon: CheckCircleIcon, title: 'Order placed', body: `With the allotment date: ${formatDay(r.allotmentDate)}.` },
-    { time: '1:10', icon: PieChartIcon, title: 'Portfolio', body: 'Earnings vs idle and sweep FD, in rupees.' },
+  const owner = merchant.ownerFirstName;
+  const steps = [
+    {
+      shot: recommendation,
+      title: `${brand.name} spots the surplus`,
+      kosh: `After fees land, ${brand.name} projects the balance and puts its recommendation on Home: ${formatINR(r.amount)} for ${formatMonths(r.months)}.`,
+      owner: `${owner} opens the app and taps "Put my ${formatINR(r.amount)} to work".`,
+    },
+    {
+      shot: planShot,
+      title: 'The plan is ready',
+      kosh: `${brand.name} fills in the amount, the duration and a 50/50 split across two top-rated funds.`,
+      owner: `${owner} can change any of it with the sliders, or leave it as it is.`,
+    },
+    {
+      shot: order,
+      title: 'One tap invests it',
+      kosh: `${brand.name} places one order across both funds and shows when the units will be allotted.`,
+      owner: `${owner} confirms with the MPIN he already uses for payouts.`,
+    },
+    {
+      shot: growth,
+      title: 'The money grows',
+      kosh: `${brand.name} shows what the money has earned so far, what it earns a day, and where it is heading.`,
+      owner: `${owner} does nothing. Salaries, rent and taxes go out as usual.`,
+    },
+    {
+      shot: withdraw,
+      title: 'Need it back? Instantly',
+      kosh: `Razorpay credits the account at once, free for ${plan.freeCreditDays} day, and settles with the fund the next working day.`,
+      owner: `${owner} picks an amount and a fund, and taps Withdraw.`,
+    },
   ];
 
   return (
-    <Section id="flow">
-      <SectionIntro eyebrow="The flow" before="From nudge to invested in " highlight="under 2 minutes." />
+    <Section id="flow" tone="gray">
+      <SectionIntro
+        step="06"
+        label="How it works"
+        title="The owner's flow, "
+        highlight="start to finish."
+        sub={`Five screens from the working prototype, in order. Each one shows what ${brand.name} does and what the owner does. From the first screen to an invested surplus takes under 2 minutes.`}
+      />
 
-      <Box display="grid" gridTemplateColumns={{ base: '1fr', m: 'repeat(5, 1fr)' }} gap="spacing.5" marginTop={{ base: 'spacing.9', m: 'spacing.11' }}>
-        {steps.map(({ time, icon: Icon, title, body }, i) => (
-          <Box key={title} position="relative" padding="spacing.6" borderRadius="xlarge" borderWidth="thin" borderColor={i === 2 ? 'surface.border.primary.normal' : 'surface.border.gray.subtle'} backgroundColor={i === 2 ? 'surface.background.primary.subtle' : 'surface.background.gray.intense'}>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
-              <Box padding="spacing.3" borderRadius="medium" backgroundColor="surface.background.primary.subtle" display="flex">
-                <Icon size="medium" color="surface.icon.primary.normal" />
+      <SectionBody>
+        <Steps>
+          {steps.map((s, i) => (
+            <Step key={s.title}>
+              <PhoneShot src={s.shot} alt={`Prototype screen: ${s.title}`} />
+              <Box>
+                <Label>Step {i + 1}</Label>
+                <Heading size="large" marginTop="spacing.1">
+                  {s.title}
+                </Heading>
+                <Box marginTop="spacing.4">
+                  <Label tone="muted">What {brand.name} does</Label>
+                  <Text marginTop="spacing.1">{s.kosh}</Text>
+                </Box>
+                <Box marginTop="spacing.4">
+                  <Label tone="muted">What the owner does</Label>
+                  <Text marginTop="spacing.1">{s.owner}</Text>
+                </Box>
               </Box>
-              <Text size="small" weight="semibold" color="surface.text.gray.muted">
-                {time}
-              </Text>
-            </Box>
-            <Heading size="small" marginTop="spacing.5">
-              {`${i + 1}. ${title}`}
-            </Heading>
-            <Text size="small" color="surface.text.gray.muted" marginTop="spacing.2">
-              {body}
-            </Text>
-          </Box>
-        ))}
-      </Box>
+            </Step>
+          ))}
+        </Steps>
 
-      <Box display="flex" flexDirection="column" alignItems="center" gap="spacing.4" marginTop="spacing.8">
-        <Text color="surface.text.gray.muted" textAlign="center">
-          Want a different amount or fund? Customise is one tap away, and never in the way.
-        </Text>
-        <Button variant="secondary" icon={ArrowRightIcon} iconPosition="right" onClick={onDemo}>
-          Try the flow
-        </Button>
-      </Box>
+        <Box display="flex" flexDirection={{ base: 'column', s: 'row' }} alignItems={{ base: 'flex-start', s: 'center' }} gap="spacing.4" marginTop={{ base: 'spacing.8', m: 'spacing.10' }}>
+          <Button size="large" icon={ArrowRightIcon} iconPosition="right" onClick={onDemo}>
+            Try the flow yourself
+          </Button>
+          <Text size="large" color="surface.text.gray.subtle">
+            The prototype is live. Every number in it is worked out, not typed in.
+          </Text>
+        </Box>
+      </SectionBody>
     </Section>
   );
 }

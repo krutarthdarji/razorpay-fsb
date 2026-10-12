@@ -5,31 +5,47 @@ import {
   CpuIcon,
   Heading,
   InstantSettlementIcon,
+  LayersIcon,
   SmartphoneIcon,
-  Text,
+  SparklesIcon,
   TargetIcon,
+  Text,
+  TrendingUpIcon,
   type IconComponent,
 } from '@razorpay/blade/components';
-import { Section, SectionIntro } from './layout';
+import { brand } from '../../brand';
+import { plan } from '../../data';
+import { Label, Section, SectionBody, SectionIntro, Takeaway } from './layout';
 
 type Point = { icon: IconComponent; title: string; body: string };
 
-const whyRazorpay: Point[] = [
-  { icon: BarChartIcon, title: 'Data', body: 'Sees both sides of the cash flow: what comes in and what goes out.' },
-  { icon: CpuIcon, title: 'Intelligence', body: 'Already runs forecasting agents for merchants.' },
-  { icon: InstantSettlementIcon, title: 'Rails', body: 'Instant payouts and credit partners to make "withdraw now" real.' },
+/** Real Razorpay products the recommendation stands on */
+const alreadyHas: Point[] = [
+  { icon: BarChartIcon, title: 'Both sides of the cash flow', body: 'Collections through Payment Gateway, Payment Links and Subscriptions. Salaries, vendor bills and taxes through RazorpayX.' },
+  { icon: CpuIcon, title: 'Forecasting agents', body: 'Cashflow Insights shows past inflow and payouts. The Cashflow Forecaster agent already predicts 3 to 7 days ahead.' },
+  { icon: InstantSettlementIcon, title: 'Rails and trust', body: 'Instant payouts, the MPIN owners already use, and an app they already open every day.' },
+];
+
+/** What this proposal adds on top */
+const koshAdds: Point[] = [
+  { icon: SparklesIcon, title: 'A 12-month view and one answer', body: 'A longer projection, turned into a single recommendation: how much, and for how long.' },
+  { icon: TrendingUpIcon, title: 'One-tap investing', body: 'Liquid and short-term debt funds, offered through a mutual fund distribution partner.' },
+  { icon: LayersIcon, title: 'Instant credit on withdrawal', body: `A ${plan.freeCreditDays}-day free credit from a lending partner, until the fund pays out.` },
 ];
 
 const whyMobile: Point[] = [
-  { icon: SmartphoneIcon, title: 'The owner decides', body: 'And the owner lives on the phone, not on a desktop dashboard.' },
-  { icon: BellIcon, title: 'The moment matters', body: 'Cash lands, Kosh nudges, the owner acts. Right then.' },
-  { icon: TargetIcon, title: 'One answer, one tap', body: 'A single recommendation fits a phone screen. A dashboard does not.' },
+  { icon: SmartphoneIcon, title: 'The owner decides', body: 'And the owner is on the phone, not on a desktop dashboard.' },
+  { icon: BellIcon, title: 'The moment matters', body: 'Fees land, Kosh nudges, the owner acts. Right then.' },
+  { icon: TargetIcon, title: 'One answer fits one screen', body: 'A single recommendation and one button. A dashboard would not fit, and is not needed.' },
 ];
 
-function Column({ title, points, footer }: { title: string; points: Point[]; footer?: string }) {
+function Column({ label, title, points }: { label: string; title: string; points: Point[] }) {
   return (
-    <Box padding="spacing.7" borderRadius="2xlarge" backgroundColor="surface.background.gray.intense" elevation="lowRaised" display="flex" flexDirection="column">
-      <Heading size="large">{title}</Heading>
+    <Box padding="spacing.7" borderRadius="xlarge" backgroundColor="surface.background.gray.intense" borderWidth="thin" borderColor="surface.border.gray.subtle">
+      <Label>{label}</Label>
+      <Heading size="large" marginTop="spacing.1">
+        {title}
+      </Heading>
       <Box display="flex" flexDirection="column" gap="spacing.6" marginTop="spacing.6">
         {points.map(({ icon: Icon, title: t, body }) => (
           <Box key={t} display="flex" gap="spacing.4" alignItems="flex-start">
@@ -37,37 +53,49 @@ function Column({ title, points, footer }: { title: string; points: Point[]; foo
               <Icon size="medium" color="surface.icon.primary.normal" />
             </Box>
             <Box>
-              <Text weight="semibold">{t}</Text>
-              <Text color="surface.text.gray.muted" marginTop="spacing.1">
+              <Text size="large" weight="semibold">
+                {t}
+              </Text>
+              <Text color="surface.text.gray.subtle" marginTop="spacing.1">
                 {body}
               </Text>
             </Box>
           </Box>
         ))}
       </Box>
-      {footer && (
-        <Box marginTop="spacing.7" padding="spacing.5" borderRadius="large" backgroundColor="surface.background.primary.subtle">
-          <Text weight="semibold" color="surface.text.primary.normal">
-            {footer}
-          </Text>
-        </Box>
-      )}
     </Box>
   );
 }
 
 export function WhySection() {
   return (
-    <Section id="why" tone="gray">
-      <SectionIntro eyebrow="Why Razorpay, why mobile" before="Only Razorpay can tell a merchant " highlight="what's safe." />
-      <Box display="grid" gridTemplateColumns={{ base: '1fr', m: '1fr 1fr' }} gap="spacing.6" marginTop={{ base: 'spacing.9', m: 'spacing.11' }}>
-        <Column
-          title="Why Razorpay"
-          points={whyRazorpay}
-          footer="Fund houses and fintechs can offer investing. They can't tell a merchant what's safe. Razorpay can."
-        />
-        <Column title="Why mobile" points={whyMobile} />
-      </Box>
+    <Section id="why">
+      <SectionIntro
+        step="07"
+        label="How it's made possible"
+        title="Only Razorpay can tell a merchant "
+        highlight="what's safe."
+        sub={`The recommendation needs both sides of a merchant's money: what comes in and what goes out. Razorpay already has both. ${brand.name} adds three things on top.`}
+      />
+
+      <SectionBody>
+        <Box display="grid" gridTemplateColumns={{ base: '1fr', l: 'repeat(3, 1fr)' }} gap="spacing.5">
+          <Column label="Exists today" title="What Razorpay already has" points={alreadyHas} />
+          <Column label="New in this proposal" title={`What ${brand.name} adds`} points={koshAdds} />
+          <Column label="The surface" title="Why it belongs on the phone" points={whyMobile} />
+        </Box>
+
+        <Takeaway>
+          <Label>Why nobody else can do this</Label>
+          <Heading size="xlarge" marginTop="spacing.2">
+            A fund app can sell a fund. A bank can sweep money into an FD. Neither can see a merchant's fees, payroll and
+            vendor bills together.
+          </Heading>
+          <Text size="large" color="surface.text.gray.subtle" marginTop="spacing.3">
+            So neither can say how much is safe to move. Razorpay can.
+          </Text>
+        </Takeaway>
+      </SectionBody>
     </Section>
   );
 }

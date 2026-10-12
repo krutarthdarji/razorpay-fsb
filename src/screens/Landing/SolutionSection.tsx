@@ -1,156 +1,105 @@
-import styled from 'styled-components';
-import {
-  AlertTriangleIcon,
-  Amount,
-  ArrowRightIcon,
-  Badge,
-  Box,
-  Button,
-  CheckIcon,
-  HelpCircleIcon,
-  InstantSettlementIcon,
-  Text,
-  ZapIcon,
-  type IconComponent,
-} from '@razorpay/blade/components';
+import { ArrowRightIcon, Box, CheckCircleIcon, Heading, Text } from '@razorpay/blade/components';
 import { brand } from '../../brand';
-import { formatDay, formatMonths } from '../../lib/dates';
+import { merchant, plan } from '../../data';
+import { formatMonths } from '../../lib/dates';
 import { formatINR } from '../../lib/format';
+import { compare, koshSplit, sweepFdEarns } from '../../lib/funds';
 import { cycle } from '../../lib/recommendation';
-import { compare, koshSplit } from '../../lib/funds';
 import { KoshAvatar } from '../../components/app/KoshAvatar';
-import { Section, SectionIntro } from './layout';
-
-const Bubble = styled.div(({ theme }) => ({
-  padding: theme.spacing[5],
-  borderRadius: `${theme.border.radius.xsmall}px ${theme.border.radius.xlarge}px ${theme.border.radius.xlarge}px ${theme.border.radius.xlarge}px`,
-  backgroundColor: theme.colors.surface.background.gray.intense,
-  boxShadow: theme.elevation.lowRaised,
-}));
-
-function KoshSays({ children }: { children: React.ReactNode }) {
-  return (
-    <Box display="flex" gap="spacing.3" alignItems="flex-start">
-      <KoshAvatar size="medium" />
-      <Box flex={1}>
-        <Bubble>{children}</Bubble>
-      </Box>
-    </Box>
-  );
-}
-
-const fixes: { icon: IconComponent; friction: string; fix: string }[] = [
-  { icon: HelpCircleIcon, friction: 'Knowledge', fix: `${brand.name} tells you what's safe: the amount, for how long, and where.` },
-  { icon: AlertTriangleIcon, friction: 'Fear', fix: 'Payroll comes first. Kosh projects every payment and recommends a cushion before it recommends investing.' },
-  { icon: ZapIcon, friction: 'Effort', fix: 'One tap invests it in top-rated liquid and short-term debt funds, inside RazorpayX.' },
-  { icon: InstantSettlementIcon, friction: 'Liquidity', fix: 'Withdraw anytime. Razorpay credits you instantly, free for a day.' },
-];
-
-const family = [
-  { name: 'Cashflow Forecaster', by: 'Agent Studio' },
-  { name: 'Agentic banking', by: 'RazorpayX' },
-  { name: `${brand.name}, surplus cash agent`, by: 'RazorpayX', isUs: true },
-];
+import { frictions } from './FrictionSection';
+import { Label, Section, SectionBody, SectionIntro, Takeaway } from './layout';
 
 export function SolutionSection() {
   const r = cycle;
   const earn = compare(r.amount, koshSplit, r.days);
 
+  /** What Kosh does about each friction, in the same order as the friction section */
+  const answers = [
+    {
+      does: 'Kosh tells the owner the amount and the duration',
+      how: `It projects the balance 12 months ahead from collections, payroll, vendor and tax payments. It finds the lowest point, keeps a cushion of ${formatINR(r.cushion)} for surprises, and recommends the rest. For ${merchant.ownerFirstName}: ${formatINR(r.amount)} for ${formatMonths(r.months)}.`,
+    },
+    {
+      does: 'Payments always come first',
+      how: 'Kosh only recommends money that no payment needs. Salaries, rent and taxes are covered before a single rupee is invested.',
+    },
+    {
+      does: 'One tap, inside RazorpayX',
+      how: 'Kosh splits the money across two top-rated funds: a liquid fund and a money market fund. No shares, no lock-in, no fund research. The owner confirms with the MPIN already used for payouts.',
+    },
+    {
+      does: 'Withdraw any time, credited instantly',
+      how: `Razorpay puts the money in the account at once and collects it from the fund the next working day. That credit is free for ${plan.freeCreditDays} day.`,
+    },
+  ];
+  const outcome = [
+    { label: 'Left idle in the current account', value: formatINR(0), tone: 'muted' as const },
+    { label: `In an auto-sweep FD, at about ${plan.sweepFd.referencePct}% a year`, value: `About ${formatINR(sweepFdEarns(r.amount, r.days))}`, tone: 'muted' as const },
+    { label: `Invested through ${brand.name}`, value: `About ${formatINR(earn.kosh)}`, tone: 'positive' as const },
+  ];
+
   return (
-    <Section id="solution" tone="gray">
+    <Section id="solution">
       <SectionIntro
-        eyebrow="The solution"
-        before={`Meet ${brand.name}. `}
-        highlight="An agent, not a calculator."
-        sub={`${brand.name} reads the real cash flow and gives an answer, not a tool. ${brand.meaning}: every business gets a treasury desk.`}
+        step="05"
+        label="The solution"
+        title={`${brand.name}: an AI agent that answers the question, `}
+        highlight="then does the job."
+        sub={`${brand.name} lives in the RazorpayX app. ${brand.meaning}: large companies have a treasury desk that never lets cash sit idle. ${brand.name} gives every small business one.`}
       />
 
-      <Box display="grid" gridTemplateColumns={{ base: '1fr', m: '1fr 1fr' }} gap={{ base: 'spacing.8', m: 'spacing.10' }} marginTop={{ base: 'spacing.9', m: 'spacing.11' }} alignItems="center">
-        {/* The agent, in its own words */}
-        <Box padding="spacing.7" borderRadius="2xlarge" backgroundColor="surface.background.cloud.subtle" display="flex" flexDirection="column" gap="spacing.5">
-          <KoshSays>
-            <Box display="flex" flexWrap="wrap" alignItems="baseline" columnGap="spacing.2">
-              <Amount value={r.amount} type="heading" size="large" weight="semibold" suffix="none" />
-              <Text size="large">is safe to invest for {formatMonths(r.months)}.</Text>
-            </Box>
-            <Text color="surface.text.gray.muted" marginTop="spacing.2">
-              Half in a top-rated liquid fund, half in a short-term debt fund. It could earn about {formatINR(earn.kosh)}, against {formatINR(earn.sweepFd)} in an auto-sweep FD. 100% liquid.
-            </Text>
-            <Box display="flex" gap="spacing.3" marginTop="spacing.4">
-              <Box flex={1}>
-                <Button isFullWidth size="small">{`Invest ${formatINR(r.amount)}`}</Button>
-              </Box>
-              <Button size="small" variant="secondary">
-                Customise
-              </Button>
-            </Box>
-          </KoshSays>
-          <Box alignSelf="flex-end">
-            <Badge color="primary" size="large" icon={CheckIcon}>
-              Invested with one tap and MPIN
-            </Badge>
-          </Box>
-          <KoshSays>
-            <Text weight="semibold">Order placed.</Text>
-            <Text color="surface.text.gray.muted" marginTop="spacing.1">
-              Units allotted on {formatDay(r.allotmentDate)}. Need it back? Instant credit, free for a day.
-            </Text>
-          </KoshSays>
+      <SectionBody>
+        <Box display="flex" alignItems="center" gap="spacing.3">
+          <KoshAvatar size="medium" />
+          <Heading size="xlarge">What {brand.name} does, friction by friction</Heading>
         </Box>
-
-        {/* Each friction, removed */}
-        <Box display="flex" flexDirection="column" gap="spacing.5">
-          {fixes.map(({ icon: Icon, friction, fix }) => (
-            <Box key={friction} display="flex" gap="spacing.4" alignItems="flex-start" padding="spacing.5" borderRadius="xlarge" backgroundColor="surface.background.gray.intense">
-              <Box flexShrink={0} padding="spacing.3" borderRadius="medium" backgroundColor="feedback.background.positive.subtle" display="flex">
-                <Icon size="medium" color="feedback.icon.positive.intense" />
-              </Box>
+        <Box display="flex" flexDirection="column" gap="spacing.4" marginTop="spacing.6">
+          {frictions.map((f, i) => (
+            <Box key={f.name} display="grid" gridTemplateColumns={{ base: '1fr', m: '0.8fr auto 1.6fr' }} gap={{ base: 'spacing.4', m: 'spacing.6' }} alignItems="center" padding="spacing.6" borderRadius="xlarge" borderWidth="thin" borderColor="surface.border.gray.subtle">
               <Box>
-                <Box display="flex" alignItems="center" gap="spacing.2">
-                  <Text size="small" weight="semibold" color="feedback.text.negative.intense" textDecorationLine="line-through">
-                    {friction}
-                  </Text>
-                  <ArrowRightIcon size="small" color="surface.icon.gray.muted" />
-                  <Text size="small" weight="semibold" color="feedback.text.positive.intense">
-                    Solved
-                  </Text>
+                <Label tone="negative">
+                  Friction {i + 1}: {f.name}
+                </Label>
+                <Text size="large" color="surface.text.gray.subtle" marginTop="spacing.1">
+                  {f.says}
+                </Text>
+              </Box>
+              <Box display={{ base: 'none', m: 'flex' }}>
+                <ArrowRightIcon size="large" color="surface.icon.gray.muted" />
+              </Box>
+              <Box display="flex" gap="spacing.3" alignItems="flex-start">
+                <Box flexShrink={0} display="flex" marginTop="spacing.1">
+                  <CheckCircleIcon size="large" color="feedback.icon.positive.intense" />
                 </Box>
-                <Text marginTop="spacing.2">{fix}</Text>
+                <Box>
+                  <Heading size="medium">{answers[i].does}</Heading>
+                  <Text marginTop="spacing.2">{answers[i].how}</Text>
+                </Box>
               </Box>
             </Box>
           ))}
         </Box>
-      </Box>
 
-      <Box marginTop={{ base: 'spacing.9', m: 'spacing.11' }} textAlign="center">
-        <Text size="small" weight="semibold" color="surface.text.gray.muted">
-          PART OF RAZORPAY'S AGENTIC FAMILY
-        </Text>
-        <Box display="flex" flexWrap="wrap" justifyContent="center" gap="spacing.4" marginTop="spacing.4">
-          {family.map((f) => (
-            <Box
-              key={f.name}
-              display="flex"
-              alignItems="center"
-              gap="spacing.3"
-              paddingX="spacing.5"
-              paddingY="spacing.3"
-              borderRadius="max"
-              borderWidth="thin"
-              borderColor={f.isUs ? 'surface.border.primary.normal' : 'surface.border.gray.subtle'}
-              backgroundColor="surface.background.gray.intense"
-            >
-              {f.isUs && <KoshAvatar size="small" />}
-              <Text size="small" color="surface.text.gray.muted">
-                {f.by}
-              </Text>
-              <Text size="small" weight="semibold">
-                {f.name}
-              </Text>
-            </Box>
-          ))}
-        </Box>
-      </Box>
+        <Takeaway>
+          <Label>What it means for {merchant.ownerFirstName}</Label>
+          <Heading size="xlarge" marginTop="spacing.2">
+            {formatINR(r.amount)} that sat idle now earns for {formatMonths(r.months)}, and every payment still goes through.
+          </Heading>
+          <Box display="grid" gridTemplateColumns={{ base: '1fr', m: 'repeat(3, 1fr)' }} gap="spacing.5" marginTop="spacing.5">
+            {outcome.map((o) => (
+              <Box key={o.label}>
+                <Label tone={o.tone}>{o.label}</Label>
+                <Heading size="large" color={o.tone === 'positive' ? 'feedback.text.positive.intense' : undefined}>
+                  {o.value}
+                </Heading>
+              </Box>
+            ))}
+          </Box>
+          <Text size="small" color="surface.text.gray.muted" marginTop="spacing.4">
+            Estimates. Funds at their pace over the last 12 months; sweep FD at a reference rate of {plan.sweepFd.referencePct}% a year. Returns are not guaranteed.
+          </Text>
+        </Takeaway>
+      </SectionBody>
     </Section>
   );
 }

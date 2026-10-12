@@ -1,6 +1,6 @@
 /** Layout pieces shared by the landing page sections */
 import styled from 'styled-components';
-import { Badge, Box, Display, Text } from '@razorpay/blade/components';
+import { Box, Display, Text } from '@razorpay/blade/components';
 import { PAGE_MAX_WIDTH } from '../../components/LandingNav';
 
 export function Container({ children }: { children: React.ReactNode }) {
@@ -16,12 +16,13 @@ type Tone = 'white' | 'gray';
 const SectionBox = styled.section<{ $tone: Tone }>(({ theme, $tone }) => ({
   backgroundColor:
     $tone === 'white' ? theme.colors.surface.background.gray.intense : theme.colors.surface.background.gray.moderate,
-  // Generous vertical rhythm like razorpay.com: 2 × spacing.11 on desktop, spacing.11 on phones
+  // Nav links land with the section's label just below the fixed nav
+  scrollMarginTop: theme.spacing[10],
   paddingTop: theme.spacing[11],
   paddingBottom: theme.spacing[11],
   [`@media (min-width: ${theme.breakpoints.m}px)`]: {
-    paddingTop: theme.spacing[11] * 2,
-    paddingBottom: theme.spacing[11] * 2,
+    paddingTop: theme.spacing[11] * 1.5,
+    paddingBottom: theme.spacing[11] * 1.5,
   },
 }));
 
@@ -33,65 +34,34 @@ export function Section({ id, tone = 'white', children }: { id?: string; tone?: 
   );
 }
 
-/** Small pill above a heading, like "PAY AT SCALE WITH" on razorpay.com/x */
-export function Eyebrow({ children }: { children: string }) {
-  return (
-    <Badge color="neutral" size="medium">
-      {children.toUpperCase()}
-    </Badge>
-  );
-}
-
 /**
- * RazorpayX-style heading: light weight, one phrase in blue.
- * `before` + `highlight` + `after`.
+ * Section header: a numbered label, a strong title with one phrase in blue, and one
+ * line that says what the section shows. Left-aligned and in the same place every
+ * time, so the page reads top to bottom like a document.
  */
-export function HighlightHeading({
-  before,
-  highlight,
-  after = '',
-  size = 'medium',
-  align = 'center',
-  as = 'h2',
-}: {
-  before: string;
-  highlight: string;
-  after?: React.ReactNode;
-  size?: 'small' | 'medium' | 'large' | 'xlarge';
-  align?: 'center' | 'left';
-  as?: 'h1' | 'h2' | 'h3';
-}) {
+export function SectionIntro({ step, label, title, highlight, sub }: { step: string; label: string; title: string; highlight?: string; sub?: string }) {
   return (
-    <Display as={as} size={size} weight="regular" textAlign={align}>
-      {before}
-      <Display as="span" size={size} weight="regular" color="surface.text.primary.normal">
-        {highlight}
+    <Box display="flex" flexDirection="column" gap="spacing.4" maxWidth="840px">
+      <Box display="flex" alignItems="center" gap="spacing.3">
+        <Box paddingX="spacing.3" paddingY="spacing.1" borderRadius="max" backgroundColor="surface.background.primary.intense">
+          <Text weight="semibold" color="surface.text.staticWhite.normal">
+            {step}
+          </Text>
+        </Box>
+        <Text size="large" weight="semibold" color="surface.text.primary.normal">
+          {label}
+        </Text>
+      </Box>
+      <Display as="h2" size="small" weight="semibold">
+        {title}
+        {highlight && (
+          <Display as="span" size="small" weight="semibold" color="surface.text.primary.normal">
+            {highlight}
+          </Display>
+        )}
       </Display>
-      {after}
-    </Display>
-  );
-}
-
-/** Eyebrow + heading + optional sub line, centred */
-export function SectionIntro({
-  eyebrow,
-  before,
-  highlight,
-  after,
-  sub,
-}: {
-  eyebrow: string;
-  before: string;
-  highlight: string;
-  after?: string;
-  sub?: string;
-}) {
-  return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap="spacing.5" maxWidth="760px" marginX="auto">
-      <Eyebrow>{eyebrow}</Eyebrow>
-      <HighlightHeading before={before} highlight={highlight} after={after} />
       {sub && (
-        <Text size="large" color="surface.text.gray.muted" textAlign="center">
+        <Text size="large" color="surface.text.gray.subtle">
           {sub}
         </Text>
       )}
@@ -99,28 +69,34 @@ export function SectionIntro({
   );
 }
 
-/** Light blue-grey panel that holds a product visual, like the illustration panels on razorpay.com/x */
-export const VisualPanel = styled.div(({ theme }) => ({
-  position: 'relative',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  // Extra room top and bottom on phones so the floating label doesn't cover the card
-  padding: `${theme.spacing[11]}px ${theme.spacing[5]}px`,
-  minHeight: 300,
-  [`@media (min-width: ${theme.breakpoints.m}px)`]: { padding: theme.spacing[8] },
-  borderRadius: theme.border.radius.large,
-  background: `linear-gradient(135deg, ${theme.colors.surface.background.cloud.subtle}, ${theme.colors.surface.background.sea.subtle})`,
-}));
+/** The space between a section's header and its content */
+export function SectionBody({ children }: { children: React.ReactNode }) {
+  return <Box marginTop={{ base: 'spacing.8', m: 'spacing.10' }}>{children}</Box>;
+}
 
-/** Green floating label on a visual, like "Pay Employees" on razorpay.com/x */
-export const FloatingLabel = styled.div(({ theme }) => ({
-  position: 'absolute',
-  padding: `${theme.spacing[3]}px ${theme.spacing[4]}px`,
-  borderRadius: theme.border.radius.medium,
-  backgroundColor: theme.colors.feedback.background.positive.intense,
-  color: theme.colors.surface.text.staticWhite.normal,
-  fontFamily: theme.typography.fonts.family.heading,
-  fontSize: theme.typography.fonts.size[200],
-  boxShadow: theme.elevation.midRaised,
-}));
+const labelColor = {
+  primary: 'surface.text.primary.normal',
+  positive: 'feedback.text.positive.intense',
+  negative: 'feedback.text.negative.intense',
+  notice: 'feedback.text.notice.intense',
+  muted: 'surface.text.gray.muted',
+  onDark: 'surface.text.staticWhite.muted',
+} as const;
+
+/** A short label above a piece of content. Sentence case and body size, so it reads at a glance. */
+export function Label({ children, tone = 'primary' }: { children: React.ReactNode; tone?: keyof typeof labelColor }) {
+  return (
+    <Text weight="semibold" color={labelColor[tone]}>
+      {children}
+    </Text>
+  );
+}
+
+/** The closing line of a section: the one thing to take away from it */
+export function Takeaway({ children }: { children: React.ReactNode }) {
+  return (
+    <Box marginTop={{ base: 'spacing.7', m: 'spacing.8' }} padding={{ base: 'spacing.6', m: 'spacing.7' }} borderRadius="xlarge" backgroundColor="surface.background.primary.subtle" borderLeftWidth="thicker" borderLeftColor="surface.border.primary.normal">
+      {children}
+    </Box>
+  );
+}
