@@ -6,3 +6,5 @@ dist
 
 # Buildathon brief from the organisers (not project code)
 Razorpay - FSB.docx
+.vercel
+.env*
