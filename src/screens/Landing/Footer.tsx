@@ -14,8 +14,9 @@ export function Footer() {
             Prototype built with Claude Code and Razorpay's Blade design system, via the Blade MCP.
           </Text>
           <Text size="small" color="surface.text.gray.muted" textAlign="center">
-            All figures are illustrative. Returns are before tax and not guaranteed. Mutual fund investments are subject
-            to market risks.
+            {brand.name} is a proposal, not a live Razorpay product. The cash-flow projection in this prototype is a simulation on
+            sample data. All figures are illustrative. Returns are before tax and not guaranteed. Mutual fund investments are
+            subject to market risks.
           </Text>
         </Box>
       </Container>

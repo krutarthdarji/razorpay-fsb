@@ -51,7 +51,7 @@ export const Hero = forwardRef<HTMLDivElement, Props>(function Hero({ onDemo }, 
               </Display>
             </Display>
             <Text size="large" color="surface.text.gray.subtle" marginTop="spacing.5">
-              {brand.name} is an AI agent inside the RazorpayX app. It tells a business owner how much of the account
+              {brand.name} is a proposed treasury agent for the RazorpayX app. It tells a business owner how much of the account
               balance is safe to invest and for how long, then invests it in one tap. The money stays 100% liquid.
             </Text>
 

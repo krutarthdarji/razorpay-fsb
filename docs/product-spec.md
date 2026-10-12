@@ -2,7 +2,9 @@
 
 ## Name
 - **Kosh** (कोष, "treasury"). Shown as **RazorpayX Kosh**, a treasury agent. Large companies have treasury teams that never let cash sit idle; Kosh gives every SME owner one. Set in `src/brand.ts`.
-- Part of Razorpay's agentic family, alongside Agent Studio's Cashflow Forecaster and RazorpayX agentic banking.
+- What it is: a proposed treasury agent for RazorpayX. It finds spare cash, recommends how much to invest and for how long, and prepares the order. The owner approves every time. Label in the app: "RazorpayX treasury agent".
+- Where it sits: one more agent in RazorpayX Agentic Banking, beside the Payout Agent and Cashflow Insights. Same pattern: the agent prepares, the owner approves.
+- What it is not: Razorpay's whole agentic AI, autonomous (it never moves money on its own), a chat assistant, or a live model (the prototype's projection is a simulation on sample data).
 
 ## The problem
 - A current account pays 0% interest (banks are not allowed to pay any). About ₹30 lakh crore sits in demand deposits at Indian banks (RBI, Feb 2026).
@@ -24,7 +26,7 @@ Businesses that collect first and spend later: customers pay in advance, costs c
 - Frictions that have stopped adoption: Knowledge (how much can I spare?), Fear (what if salaries bounce?), Effort (another app, another KYC), Liquidity (what if I need it tomorrow?).
 
 ## The solution
-- Kosh, Razorpay's agentic AI, projects the real cash flow and recommends: "Invest ₹5,00,000 of your surplus for 6 months", in top-rated liquid and short-term debt funds. More returns, 100% liquid.
+- Kosh, a treasury agent, projects the cash flow and recommends: "Invest ₹5,00,000 of your surplus for 6 months", in top-rated liquid and short-term debt funds. More returns, 100% liquid.
 - Knowledge → the agent's answer. Fear → every payment is projected and a cushion for misc expenses is kept first. Effort → one tap. Liquidity → instant credit, free for a day.
 
 ## Landing page (`/`)

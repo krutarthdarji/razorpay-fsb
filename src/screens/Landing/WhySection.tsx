@@ -79,6 +79,13 @@ export function WhySection() {
       />
 
       <SectionBody>
+        <Box padding="spacing.6" borderRadius="xlarge" borderWidth="thin" borderColor="surface.border.primary.normal" backgroundColor="surface.background.gray.intense" marginBottom="spacing.5">
+          <Label>Where {brand.name} sits</Label>
+          <Text size="large" marginTop="spacing.2">
+            {brand.name} would be one more agent in RazorpayX Agentic Banking, beside the Payout Agent and Cashflow Insights. It
+            follows the same pattern as they do: the agent prepares, the owner approves.
+          </Text>
+        </Box>
         <Box display="grid" gridTemplateColumns={{ base: '1fr', l: 'repeat(3, 1fr)' }} gap="spacing.5">
           <Column label="Exists today" title="What Razorpay already has" points={alreadyHas} />
           <Column label="New in this proposal" title={`What ${brand.name} adds`} points={koshAdds} />

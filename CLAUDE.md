@@ -2,7 +2,8 @@
 
 ## What this is
 - Entry for the Razorpay Buildathon, track "Razorpay in Your Pocket" (mobile). Brief: `Razorpay - FSB.docx` (git-ignored). Re-check every build against it: problem, merchant, today's friction, why mobile, a flow under 2 minutes, decisions and what was left out, metrics.
-- **RazorpayX Kosh**: Razorpay's agentic AI for surplus cash, in the RazorpayX app. Kosh recommends how much surplus to invest and for how long, and invests it in one tap in safe, liquid funds. Name lives in `src/brand.ts`.
+- **RazorpayX Kosh**: a proposed treasury agent for RazorpayX. It finds spare cash, recommends how much to invest and for how long, and prepares the order in safe, liquid funds. The owner approves every time. Name lives in `src/brand.ts`.
+- Describe Kosh only as what it is. It is one agent (it would sit in RazorpayX Agentic Banking, beside the Payout Agent and Cashflow Insights), not "Razorpay's agentic AI". It never moves money on its own, it is not a chat assistant, and in this prototype its projection is a simulation on sample data.
 - Read `docs/product-spec.md` before building any screen. Read `docs/design-system.md` before writing any UI. Use `docs/mock-data.md` for every number shown.
 
 ## Hard rules

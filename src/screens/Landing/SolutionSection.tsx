@@ -32,6 +32,12 @@ export function SolutionSection() {
       how: `Razorpay puts the money in the account at once and collects it from the fund the next working day. That credit is free for ${plan.freeCreditDays} day.`,
     },
   ];
+  /** Where Kosh's part ends and the owner's begins */
+  const roles = [
+    { label: `What ${brand.name} does on its own`, tone: 'primary' as const, text: 'Reads collections and payments. Projects the balance. Works out the spare amount and the duration. Picks the funds and prepares the order.' },
+    { label: 'What the owner approves', tone: 'positive' as const, text: 'Every investment and every withdrawal, with the MPIN. The owner can change the amount, the duration or the funds first.' },
+    { label: `What ${brand.name} never does`, tone: 'negative' as const, text: 'Move money on its own. There is no auto-invest and no auto-withdraw.' },
+  ];
   const outcome = [
     { label: 'Left idle in the current account', value: formatINR(0), tone: 'muted' as const },
     { label: `In an auto-sweep FD, at about ${plan.sweepFd.referencePct}% a year`, value: `About ${formatINR(sweepFdEarns(r.amount, r.days))}`, tone: 'muted' as const },
@@ -43,8 +49,8 @@ export function SolutionSection() {
       <SectionIntro
         step="05"
         label="The solution"
-        title={`${brand.name}: an AI agent that answers the question, `}
-        highlight="then does the job."
+        title={`${brand.name}: a treasury agent that answers the question, `}
+        highlight="then does the job once the owner approves."
         sub={`${brand.name} lives in the RazorpayX app. ${brand.meaning}: large companies have a treasury desk that never lets cash sit idle. ${brand.name} gives every small business one.`}
       />
 
@@ -76,6 +82,17 @@ export function SolutionSection() {
                   <Text marginTop="spacing.2">{answers[i].how}</Text>
                 </Box>
               </Box>
+            </Box>
+          ))}
+        </Box>
+
+        <Box display="grid" gridTemplateColumns={{ base: '1fr', m: 'repeat(3, 1fr)' }} gap="spacing.5" marginTop="spacing.5">
+          {roles.map((role) => (
+            <Box key={role.label} padding="spacing.6" borderRadius="xlarge" backgroundColor="surface.background.gray.moderate">
+              <Label tone={role.tone}>{role.label}</Label>
+              <Text size="large" marginTop="spacing.2">
+                {role.text}
+              </Text>
             </Box>
           ))}
         </Box>

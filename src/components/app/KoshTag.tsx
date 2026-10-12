@@ -4,7 +4,7 @@ import { KoshAvatar } from './KoshAvatar';
 
 type Props = { label?: string; onDark?: boolean; size?: 'medium' | 'large' };
 
-/** "Kosh · Razorpay's agentic AI": marks anything Kosh recommends or projects. `large` makes it the card's title. */
+/** "Kosh · RazorpayX treasury agent": marks anything Kosh recommends or projects. `large` makes it the card's title. */
 export function KoshTag({ label, onDark, size = 'medium' }: Props) {
   const title = label ?? brand.name;
   return (
